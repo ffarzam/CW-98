@@ -18,6 +18,12 @@ args = parser.parse_args()
 
 date_ = datetime.strptime(args.date, "%Y-%m-%d").date()
 
-result= date_ + timedelta(args.days)
-print("\033[0;31m"f"Result: {result}""\033[0m")
-logger.info(f'MODE: {args.mode} | DATE: {args.date} | DAYS: {args.days} | RESULT: {result}')
+if args.mode == "add":
+    result= date_ + timedelta(args.days)
+    print("\033[0;31m"f"Result: {result}""\033[0m")
+    logger.info(f'MODE: {args.mode} | DATE: {args.date} | DAYS: {args.days} | RESULT: {result}')
+
+elif args.mode == "subtract":
+    result = date_ - timedelta(args.days)
+    print("\033[0;31m"f"Result: {result}""\033[0m")
+    logger.info(f'MODE: {args.mode} | DATE: {args.date} | DAYS: {args.days} | RESULT: {result}')
