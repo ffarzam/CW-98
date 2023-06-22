@@ -46,3 +46,12 @@ where film.length > (select avg(length) from film);
 --FROM (Select * ,(SELECT avg(length) FROM film)  as c
 --FROM film) as f
 --WHERE f.length> f.c
+
+
+--part 8
+SELECT *
+FROM (SELECT film.film_id,film.title, rental.return_date
+FROM film
+INNER JOIN inventory ON inventory.film_id=film.film_id
+INNER JOIN rental ON rental.inventory_id=inventory.inventory_id) as f
+WHERE return_date > '2005-05-29' and return_date < '2005-05-30';
