@@ -37,3 +37,12 @@ INNER JOIN inventory ON inventory.inventory_id = rental.inventory_id
 INNER JOIN film ON film.film_id = inventory.inventory_id;
 
 
+--part 7
+
+select title,length,(select avg(length) from film) as avg_lengh from film
+where film.length > (select avg(length) from film);
+
+--SELECT f.film_id, f.title,f.length, f.c
+--FROM (Select * ,(SELECT avg(length) FROM film)  as c
+--FROM film) as f
+--WHERE f.length> f.c
