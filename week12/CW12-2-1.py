@@ -1,21 +1,29 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
-import time
-
 import json
+
 HOST = "192.168.1.167"
-PORT = 9999
+PORT = 8080
+
+todo_lst = []
 
 
 class FarzamHttp(BaseHTTPRequestHandler):
-
-    def get_response(self):
-        return json.dumps({})
 
     def do_GET(self):
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
         self.end_headers()
-        self.wfile.write(self.get_response().encode("utf-8"))
+        self.wfile.write(json.dumps(todo_lst).encode("utf-8"))
+
+    def do_POST(self):
+        content_len = int(self.headers.get('Content-Length'))
+        post_body = self.rfile.read(content_len)
+        post_body_str = json.loads(post_body)
+        todo_lst.append(post_body_str)
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.end_headers()
+        self.wfile.write("Post has been done successfully".encode("utf-8"))
 
 
 server = HTTPServer((HOST, PORT), FarzamHttp)
