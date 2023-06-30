@@ -1,0 +1,85 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.card {
+  height: auto;
+  padding 10px 0px
+  border-radius: 16px;
+  border: 1px solid gainsboro;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #b1b1b1;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.leftItemWrapper img {
+  width: 30px;
+  height: 30px;
+}
+.leftItemWrapper span {
+  vertical-align: 10px;
+}
+
+.rightItemWrapper {
+  width: 30px;
+  height: 30px;
+}
+
+.rightItemWrapper svg {
+  width: 30px;
+  height: 30px;
+}
+
+.pic img {
+  width: 100%;
+  height: 100%;
+}
+
+.icons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#heart {width: 20%; height: 20%;}
+#comment {width: 20%; height: 20%;}
+#send {width: 20%; height: 20%;}
+#save {width: 100%; height: 100%;}
+
+
+.view {
+  padding: 5px;
+  margin: 5px;
+
+}
+.caption {
+  padding: 5px;
+  margin: 5px;
+
+}
+
+.name {
+font-style: bold;
+font-weight: bold;
+}
+
+.caption_style {
+font-style: normal;
+font-weight: normal;
+}
