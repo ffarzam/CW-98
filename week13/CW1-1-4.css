@@ -8,12 +8,13 @@ color: #000
   color: green;
 }
 
-#A1:active {
-  color: red;
-}
 
 #A1:hover {
 color : blue
+}
+
+#A1:active {
+  color: red;
 }
 
 #A2 {
@@ -22,15 +23,15 @@ color: blue
 }
 
 
-
 #A2:visited {
   color: purple;
 }
 
-#A2:active {
-  color: yellow;
-}
 
 #A2:hover {
 color : red
+}
+
+#A2:active {
+  color: yellow;
 }
