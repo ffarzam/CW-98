@@ -1,0 +1,31 @@
+#A1 {
+text-decoration: none;
+color: #000
+}
+
+#A1:hover {color : blue}
+
+#A1:visited {
+  color: green;
+}
+
+#A1:active {
+  color: red;
+}
+
+#A2 {
+text-decoration: none;
+color: blue
+}
+
+#A2:hover {color : red}
+
+#A2:visited {
+  color: purple;
+}
+
+#A2:active {
+  color: yellow;
+}
+
+
