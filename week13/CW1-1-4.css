@@ -3,7 +3,6 @@ text-decoration: none;
 color: #000
 }
 
-#A1:hover {color : blue}
 
 #A1:visited {
   color: green;
@@ -13,12 +12,16 @@ color: #000
   color: red;
 }
 
+#A1:hover {
+color : blue
+}
+
 #A2 {
 text-decoration: none;
 color: blue
 }
 
-#A2:hover {color : red}
+
 
 #A2:visited {
   color: purple;
@@ -28,4 +31,6 @@ color: blue
   color: yellow;
 }
 
-
+#A2:hover {
+color : red
+}
