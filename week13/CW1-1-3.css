@@ -1,0 +1,12 @@
+.first{color: red}
+
+/* .second{ #P1 color: blue}*/
+
+.second #P1 {color: blue}
+
+/* .second p:first-of-type {
+color: blue;
+}*/
+
+/*#P1 {color: blue}*/
+
