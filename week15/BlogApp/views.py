@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Post, Category
+from .models import Post, Category, Author
 
 
 # Create your views here.
@@ -27,3 +27,14 @@ def category_list(request):
 def categories_details(request, pk):
     category = Category.objects.get(id=pk)
     return render(request, "category_details.html", {"category": category})
+
+
+def author_list(request):
+    all_author = Author.objects.all()
+    return render(request, "author_list.html", {"all_author": all_author})
+
+
+def author_details(request, pk):
+    author = Author.objects.get(id=pk)
+    return render(request, "author_details.html", {"author": author})
+
