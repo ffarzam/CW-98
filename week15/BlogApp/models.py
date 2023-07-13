@@ -12,9 +12,9 @@ class Author(models.Model):
 
 
 class Post(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=50)
     content = models.TextField()
-    author = models.CharField(max_length=100)
+    author = models.CharField(max_length=50)
     publication_date = models.DateField()
 
     def __str__(self) -> str:
@@ -22,18 +22,18 @@ class Post(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100),
-    description = models.TextField(),
+    name = models.CharField(max_length=50)
+    description = models.TextField()
 
     def __str__(self) -> str:
         return f"{self.name}: {self.description}"
 
 
 class Comment(models.Model):
-    post = models.CharField(max_length=100),
-    author = models.CharField(max_length=50),
-    content = models.TextField(),
-    date = models.DateField()
+    post = models.TextField()
+    author = models.CharField(max_length=50)
+    content = models.TextField()
+    comment_date = models.DateField()
 
     def __str__(self) -> str:
-        return f"{self.post}:{self.author}({self.date})"
+        return f"{self.post}:{self.author}, {self.comment_date}"
