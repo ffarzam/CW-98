@@ -3,9 +3,13 @@
 {% block content %}
 
 {%for post in all_posts %}
-<h3 >{{post.title}}</h3 >
+<div style="margin-top: 30px;padding-left:150px;margin-bottom: 20px;">
+    <a href='{% url "post_details" post.id  %}'
+>{{post.title}}</a >
 
-<hr>
+</div>
+
+
 
 {%endfor%}
 {%endblock%}
