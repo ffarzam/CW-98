@@ -7,7 +7,7 @@ migrations/
 .migrations
 **/migrations/**
 **/**/migrations
-week15/BlogApp/migrations
+week15/BlogApp/migrations/
 # C extensions
 *.so
 
