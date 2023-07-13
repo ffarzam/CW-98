@@ -4,10 +4,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-**/migrations/**
-**/**/migrations
-week15/BlogApp/migrations/**
-**/migrations/
 # C extensions
 *.so
 
@@ -165,4 +161,3 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-/week15/BlogApp/migrations/
