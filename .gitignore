@@ -3,15 +3,16 @@
 __pycache__/
 *.py[cod]
 *$py.class
-migrations/
-.migrations
+
 **/migrations/**
 **/**/migrations
-week15/BlogApp/migrations/
+week15/BlogApp/migrations/**
+**/migrations/
 # C extensions
 *.so
 
 # Distribution / packaging
+.idea
 .Python
 build/
 develop-eggs/
@@ -164,3 +165,4 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+/week15/BlogApp/migrations/
