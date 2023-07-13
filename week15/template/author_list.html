@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %} Blogify Posts {%endblock%}
+{% block content %}
+
+{%for author in all_author %}
+<div style="margin-top: 30px;padding-left:150px;margin-bottom: 20px;">
+    <a href='{% url "author_details" author.id  %}'
+>{{author.name}}</a >
+
+</div>
+
+
+
+{%endfor%}
+{%endblock%}
