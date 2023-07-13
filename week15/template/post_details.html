@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %} Blogify {%endblock%}
+{% block content %}
+<div style="margin-top: 30px;padding-left:150px;margin-bottom: 20px;">
+  <h3>{{post.title}}</h3>
+  <small>{{post.author}}</small>
+  <p>{{post.content}}</p>
+  <small>{{post.publication_date}}</small>
+  </div>
+{%endblock%}
