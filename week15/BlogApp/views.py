@@ -13,4 +13,7 @@ def post_list(request):
     all_posts = Post.objects.all
     return render(request, "post_list.html", {"all_posts": all_posts})
 
-# def posts_details(request,)
+
+def post_details(request, pk):
+    post = Post.objects.get(id=pk)
+    return render(request, "post_details.html", {"post": post})
