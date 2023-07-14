@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %} Blogify {%endblock%}
+{% block content %}
+
+{%for category in all_category %}
+<div style="margin-top: 30px;padding-left:150px;margin-bottom: 20px;">
+    <a href='{% url "categories_details" category.id  %}'
+>{{category.name}}</a >
+
+</div>
+
+
+
+{%endfor%}
+{%endblock%}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %} Blogify {%endblock%}
+{% block content %}
+<div style="margin-top: 30px;padding-left:150px;margin-bottom: 20px;">
+  <h3>{{post.title}}</h3>
+  <p>{{post.content}}</p>
+  <small>Author: </small><a href='{% url "author_details" post.author.id %}'><small>{{post.author.name}}</small></a><br>
+   <small>Category: </small><a href='{% url "categories_details" post.category.id %}'><small>{{post.category.name}}</small></a><br>
+
+  <small>Date: {{post.publication_date}}</small>
+  </div>
+{%endblock%}
+
+
+{% block comment %}
+<h3 style="margin-top: 30px;padding-left:150px;margin-bottom: 20px;">Comments:</h3><br>
+{%for comment in comments %}
+<div style="margin-top: 30px;padding-left:150px;margin-bottom: 20px;">
+
+  <small >{{comment.author.name}}</small >
+  <p>{{comment.content}}</p >
+
+</div>
+
+{%endfor%}
+<!--  <h3>{{post.title}}</h3>-->
+<!--  <p>{{post.content}}</p>-->
+<!--  <small>Author: </small><a href='{% url "author_details" post.author.id %}'><small>{{post.author.name}}</small></a><br>-->
+<!--   <small>Category: </small><a href='{% url "categories_details" post.category.id %}'><small>{{post.category.name}}</small></a><br>-->
+
+<!--  <small>Date: {{post.publication_date}}</small>-->
+  </div>
+{%endblock%}
