@@ -1,0 +1,39 @@
+{%extends 'base.html'%}
+{% block title%}
+<title>All Posts </title>
+{%endblock title%}
+{% block content%}
+<!-- Category -->
+<article class="mb-4">
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+
+                <h2 class="post-title">{{category.name}}</h2>
+                <p>{{category.description}}</p>
+            </div>
+        </div>
+    </div>
+</article>
+<!-- Divider-->
+<hr class="my-4"/>
+<!-- Post of category -->
+<article class="mb-4">
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+
+        </div>
+    </div>
+</article>
+
+
+<!-- Form Post -->
+<article class="mb-4">
+    <div class="container px-4 px-lg-5">
+        <!--{{author}}-->
+        <form class=" row gx-4 gx-lg-5 justify-content-center needs-validation" >
+
+        </form>
+    </div>
+</article>
+{% endblock content%}

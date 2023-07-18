@@ -1,0 +1,48 @@
+{%extends 'base.html'%}
+ {% block title%}
+        <title>All Posts </title>
+{%endblock title%}
+{% block content%}
+        <!-- Post Content-->
+        <article class="mb-4">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <h2 class="post-title">{{post.title}}</h2>
+                        <p>{{post.content}}}</p>
+                        <p>
+                            Placeholder text by
+                            <a href="#">{{post.author}}</a>
+                            in
+                            <a href="#">{{post.publication_date}}</a>
+
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </article>
+<!-- Divider-->
+                    <hr class="my-4" />
+ <!-- Post Comment-->
+        <article class="mb-4">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    {% for comment in all_comments %}
+                    <p>{{comment.content}}}</p>
+                    {%endfor%}
+
+                </div>
+            </div>
+        </article>
+
+
+<!-- Form Comment -->
+<article class="mb-4">
+<div class="container px-4 px-lg-5">
+
+<form class=" row gx-4 gx-lg-5 justify-content-center needs-validation" >
+
+</form>
+</div>
+</article>
+{% endblock content%}
