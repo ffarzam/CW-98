@@ -39,10 +39,11 @@
 
             </ul>
             <!-- Search bar -->
-            <form class="d-flex" method = "GET" action="{% url 'search_result' %}">
+            <form class="d-flex" method="GET" action="{% url 'search_result' %}">
 
-                    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" name="searched">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search"
+                       name="searched">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
 
             </form>
         </div>
@@ -63,9 +64,14 @@
         </div>
     </div>
 </header>
-{% block content %}
 
-{% endblock content%}
+
+
+    {% block content %}
+
+    {% endblock content%}
+
+<hr class="my-4" />
 <!-- Footer-->
 <footer class="border-top">
     <div class="container px-4 px-lg-5">
@@ -74,18 +80,18 @@
                 <ul class="list-inline text-center">
                     <li class="list-inline-item">
                         <a href="#!">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fas fa-circle fa-stack-2x"></i>
-                                        <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
-                                    </span>
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
                         </a>
                     </li>
                     <li class="list-inline-item">
                         <a href="#!">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fas fa-circle fa-stack-2x"></i>
-                                        <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
-                                    </span>
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+                            </span>
                         </a>
                     </li>
                     <li class="list-inline-item">

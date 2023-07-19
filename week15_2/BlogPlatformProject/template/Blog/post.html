@@ -1,48 +1,67 @@
 {%extends 'base.html'%}
- {% block title%}
-        <title>All Posts </title>
+{% block title%}
+<title>All Posts </title>
 {%endblock title%}
 {% block content%}
-        <!-- Post Content-->
-        <article class="mb-4">
-            <div class="container px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-md-10 col-lg-8 col-xl-7">
-                        <h2 class="post-title">{{post.title}}</h2>
-                        <p>{{post.content}}}</p>
-                        <p>
-                            Placeholder text by
-                            <a href="#">{{post.author}}</a>
-                            in
-                            <a href="#">{{post.publication_date}}</a>
+<!-- Post Content-->
+<article class="mb-4">
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <h2 class="post-title">{{post.title}}</h2>
+                <p>{{post.content}}</p>
+                <p>
+                    by:
+                    <a href="{% url 'author_details' post.author.id %}">{{post.author}}</a>
+                    in
+                    <a href="#">{{post.publication_date}}</a>
 
-                        </p>
-                    </div>
-                </div>
+                </p>
             </div>
-        </article>
+        </div>
+    </div>
+</article>
 <!-- Divider-->
-                    <hr class="my-4" />
- <!-- Post Comment-->
-        <article class="mb-4">
-            <div class="container px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5 justify-content-center">
-                    {% for comment in all_comments %}
-                    <p>{{comment.content}}}</p>
-                    {%endfor%}
-
-                </div>
-            </div>
-        </article>
+<hr class="my-4"/>
+<!-- Post Comment-->
+<article class="mb-4">
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            {% for comment in all_comments %}
+            <h6>{{comment.author}}</h6>
+            <p>{{comment.content}}</p>
+            {%endfor%}
+        </div>
+    </div>
+</article>
 
 
 <!-- Form Comment -->
 <article class="mb-4">
-<div class="container px-4 px-lg-5">
+    <div class="container px-4 px-lg-5">
 
-<form class=" row gx-4 gx-lg-5 justify-content-center needs-validation" >
+        <form class=" row gx-4 gx-lg-5 justify-content-center needs-validation" method="POST">
+            {% csrf_token %}
+            <div>
+                <h4>leave a Comment</h4>
+            </div>
+            <div>
+                <select class="form-select" name="select">
+                    <option selected> choose the Author</option>
+                    {% for author in all_author %}
+                    <option value="{{author.id}}">{{author.name}}</option>
+                    {% endfor %}
+                </select>
+                <div>
+                <textarea cols="50" name="comments" id="comments" style="font-family:sans-serif;font-size:1.2em;">
 
-</form>
-</div>
+                </textarea>
+                </div>
+            </div>
+            <div>
+                <button class="button-85">Submit</button>
+            </div>
+        </form>
+    </div>
 </article>
 {% endblock content%}

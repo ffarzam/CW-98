@@ -21,18 +21,55 @@
 <article class="mb-4">
     <div class="container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
+            {% for post in posts %}
+            {% if post.category.id == category.id %}
+                <h2 class="post-title"><a href="{% url 'post_details' post.id %}">{{post.title}}</a></h2>
+                <p>
+                    by:
+                    <a href="{% url 'author_details' post.author.id %}">{{post.author}}</a>
+                    in
+                    <a href="#">{{post.publication_date}}</a>
+
+                </p>
+            {%endif%}
+
+            {%endfor%}
 
         </div>
     </div>
 </article>
 
-
+<hr class="my-4" />
 <!-- Form Post -->
 <article class="mb-4">
     <div class="container px-4 px-lg-5">
         <!--{{author}}-->
-        <form class=" row gx-4 gx-lg-5 justify-content-center needs-validation" >
+        <form class=" row gx-4 gx-lg-5 justify-content-center needs-validation" method="POST" >
+        {% csrf_token %}
+            <div>
+                <h4>Create a Post</h4>
+            </div>
+            <div>
+                <select class="form-select" name="select">
+                    <option selected> choose the Author</option>
+                    {% for author in all_author %}
+                    <option value = "{{author.id}}">{{author.name}}</option>
+                    {% endfor %}
+                </select>
+                <div>
+                    <label for="formGroupExampleInput">title</label>
+                    <input type="text" class="form-control" id="formGroupExampleInput" placeholder="title" name="title">
+                </div>
+                <div>
 
+                <textarea cols="50" name="content" id="content" style="font-family:sans-serif;font-size:1.2em;">
+
+                </textarea>
+                </div>
+            </div>
+            <div>
+                <button class="button-85">Submit</button>
+            </div>
         </form>
     </div>
 </article>
