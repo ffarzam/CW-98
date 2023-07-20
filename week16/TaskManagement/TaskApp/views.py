@@ -43,7 +43,7 @@ def task_filter(sorting_method, filter_method=None):
     elif sorting_method == 'No Order':
         all_tasks = all_tasks
     else:
-        all_tasks = all_tasks
+        all_tasks = all_tasks.order_by('due_date')
     return all_tasks
 
 
@@ -73,12 +73,16 @@ def tasks(request):
         paginator = Paginator(all_tasks, 3)
         page_number = request.GET.get("page")
         page_obj = paginator.get_page(page_number)
-        context = {"tasks": page_obj, "all_category": all_category, "all_tags": all_tags,"all_status": [Task.TODO,Task.DOING,Task.DONE]}
+
+        status_list = []
+        for i in Task.status_choice:
+            status_list.append(i[0])
+
+        context = {"tasks": page_obj, "all_category": all_category, "all_tags": all_tags,
+                   "all_status": status_list}
         return render(request, "tasks.html", context=context)
 
-
     elif request.method == "POST":
-
         print(int(request.POST.get("category")))
         category = Category.objects.get(id=int(request.POST.get("category")))
         print(category)
@@ -105,6 +109,12 @@ def task_details(request, pk):
             return render(request, "task_details.html", context=context)
         except:
             raise Http404("No matches the given query.")
+
+    elif request.method == "POST":
+        tag = Tag.objects.create(name=request.POST.get("tag"))
+
+        # return redirect(request.build_absolute_uri())
+        return redirect(request.path)
 
 
 def search(request):
@@ -140,7 +150,9 @@ def category(request):
         return render(request, "category.html", context=context)
 
     elif request.method == "POST":
-        cat = Category.objects.create(name=request.POST.get("cat"), description=request.POST.get("description"))
+        cat = Category.objects.create(name=request.POST.get("cat"),
+                                      description=request.POST.get("description"),
+                                      image=request.POST.get("file"))
         return redirect(request.path)
 
 
@@ -155,11 +167,15 @@ def category_task(request, pk):
         page_obj = paginator.get_page(page_number)
 
         all_tags = Tag.objects.all()
-        context = {"tasks": page_obj, "category": category_item, "all_tags": all_tags,"all_status": [Task.TODO,Task.DOING,Task.DONE]}
+        status_list = []
+        for i in Task.status_choice:
+            status_list.append(i[0])
+
+        context = {"tasks": page_obj, "category": category_item, "all_tags": all_tags,
+                   "all_status": status_list}
 
         return render(request, "category_task.html", context=context)
     elif request.method == "POST":
-
 
         task = Task.objects.create(title=request.POST.get("title"),
                                    description=request.POST.get("content"),
@@ -175,7 +191,6 @@ def category_task(request, pk):
         return redirect(request.path)
 
 
-
 def about_us(request):
     return render(request, "about_us.html")
 
@@ -188,13 +203,13 @@ def download_file(request, filename):
     response['Content-Disposition'] = f"attachment; filename={filename}"
     return response
 
-# def view_file(request, filename):
-#     print("hiiii")
-#     filepath = settings.BASE_DIR / f'media/uploads/{filename}'
-#     #
-#     mime_type, _ = mimetypes.guess_type(filepath)
-#     with open(filepath, 'rb') as file:
-#         response = HttpResponse(file.read(), content_type=mime_type)
-#         response['Content-Disposition'] = f"Inline; filename='{filename}'"
-#     # return render(request, "show.html",context={"data":filepath})
-#     return response
+def view_file(request, filename):
+    print("hiiii")
+    filepath = settings.BASE_DIR / f'media/uploads/{filename}'
+    #
+    mime_type, _ = mimetypes.guess_type(filepath)
+    with open(filepath, 'rb') as file:
+        response = HttpResponse(file.read(), content_type=mime_type)
+        response['Content-Disposition'] = f"Inline; filename={filename}"
+    # return render(request, "show.html",context={"data":filepath})
+    return response
