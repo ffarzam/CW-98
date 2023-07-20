@@ -162,3 +162,7 @@ cython_debug/
 #.idea/
 
 /week15/BlogApp/migrations/
+/week15-2/env/
+/week16/TaskManagement/media/
+
+/week16/TaskManagement/static/
