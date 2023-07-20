@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %} Tasky {%endblock%}
+{% block content %}
+<div style="margin-top: 30px;padding-left:150px;margin-bottom: 20px;">
+
+    <div class="d-flex justify-content-between"
+         style="margin-top: 10px;padding-right:150px;margin-bottom: 10px;">
+        <div >
+            <h3>{{task.title}}</h3>
+            <small>Status: {{task.status}}</small>
+            <h6>Due_date: {{task.due_date}}</h6>
+        </div>
+        {%if task.file %}
+        <a href="{% url 'download_file' name %}">
+            <button class="button-85" role="button">Download</button>
+        </a>
+        {% endif %}
+    </div>
+
+    <small>Category: {{task.category}}</small><br>
+
+    <h4>Description: {{task.description}}</h4>
+
+    <small>{{task.status}}</small><br>
+    {% for tag in task.get_tags %}
+    <small>{{tag}}</small>
+    {%endfor%}
+
+
+</div>
+{%endblock%}
+
