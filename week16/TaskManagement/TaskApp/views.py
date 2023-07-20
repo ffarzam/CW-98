@@ -43,38 +43,58 @@ def task_filter(sorting_method, filter_method=None):
     elif sorting_method == 'No Order':
         all_tasks = all_tasks
     else:
-        all_tasks = all_tasks.order_by('due_date')
+        all_tasks = all_tasks
     return all_tasks
 
 
 def tasks(request):
     if request.method == "GET":
-        try:
-            filter_method = request.GET.get('gridRadios')
-            sorting_method = request.GET.get('select')
+        all_category = Category.objects.all()
+        all_tags = Tag.objects.all()
 
-            if filter_method == "all":
-                all_tasks = task_filter(sorting_method, filter_method)
+        filter_method = request.GET.get('gridRadios')
+        sorting_method = request.GET.get('select')
 
-            elif filter_method == "done":
-                all_tasks = task_filter(sorting_method, filter_method)
+        if filter_method == "all":
+            all_tasks = task_filter(sorting_method, filter_method)
 
-            elif filter_method == "doing":
-                all_tasks = task_filter(sorting_method, filter_method)
+        elif filter_method == "done":
+            all_tasks = task_filter(sorting_method, filter_method)
 
-            elif filter_method == "todo":
-                all_tasks = task_filter(sorting_method, filter_method)
+        elif filter_method == "doing":
+            all_tasks = task_filter(sorting_method, filter_method)
 
-            else:
-                all_tasks = task_filter(sorting_method)
+        elif filter_method == "todo":
+            all_tasks = task_filter(sorting_method, filter_method)
 
-            paginator = Paginator(all_tasks, 3)
-            page_number = request.GET.get("page")
-            page_obj = paginator.get_page(page_number)
-            context = {"tasks": page_obj}
-            return render(request, "tasks.html", context=context)
-        except:
-            raise Http404("No matches the given query.")
+        else:
+            all_tasks = task_filter(sorting_method)
+
+        paginator = Paginator(all_tasks, 3)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+        context = {"tasks": page_obj, "all_category": all_category, "all_tags": all_tags,"all_status": [Task.TODO,Task.DOING,Task.DONE]}
+        return render(request, "tasks.html", context=context)
+
+
+    elif request.method == "POST":
+
+        print(int(request.POST.get("category")))
+        category = Category.objects.get(id=int(request.POST.get("category")))
+        print(category)
+
+        task = Task.objects.create(title=request.POST.get("title"),
+                                   description=request.POST.get("content"),
+                                   due_date=request.POST.get("due_date"),
+                                   status=request.POST.get("status"),
+                                   category=category,
+                                   )
+        for i in dict(request.POST)['tag']:
+            tag = Tag.objects.get(id=int(i))
+            task.tag.add(tag)
+
+        # return redirect(request.build_absolute_uri())
+        return redirect(request.path)
 
 
 def task_details(request, pk):
@@ -117,11 +137,15 @@ def category(request):
         page_number = request.GET.get("page")
         page_obj = paginator.get_page(page_number)
         context = {"categories": page_obj}
-
         return render(request, "category.html", context=context)
+
+    elif request.method == "POST":
+        cat = Category.objects.create(name=request.POST.get("cat"), description=request.POST.get("description"))
+        return redirect(request.path)
 
 
 def category_task(request, pk):
+    category_item = get_object_or_404(Category, id=pk)
     if request.method == "GET":
         category_item = get_object_or_404(Category, id=pk)
         all_tasks = Task.objects.filter(category=category_item)
@@ -129,8 +153,27 @@ def category_task(request, pk):
         paginator = Paginator(all_tasks, 2)
         page_number = request.GET.get("page")
         page_obj = paginator.get_page(page_number)
-        context = {"tasks": page_obj}
+
+        all_tags = Tag.objects.all()
+        context = {"tasks": page_obj, "category": category_item, "all_tags": all_tags,"all_status": [Task.TODO,Task.DOING,Task.DONE]}
+
         return render(request, "category_task.html", context=context)
+    elif request.method == "POST":
+
+
+        task = Task.objects.create(title=request.POST.get("title"),
+                                   description=request.POST.get("content"),
+                                   due_date=request.POST.get("due_date"),
+                                   status=request.POST.get("status"),
+                                   category=category_item,
+                                   )
+        for i in dict(request.POST)['tag']:
+            tag = Tag.objects.get(id=int(i))
+            task.tag.add(tag)
+
+        # return redirect(request.build_absolute_uri())
+        return redirect(request.path)
+
 
 
 def about_us(request):
@@ -144,7 +187,6 @@ def download_file(request, filename):
     response = FileResponse(file, content_type=mime_type)
     response['Content-Disposition'] = f"attachment; filename={filename}"
     return response
-
 
 # def view_file(request, filename):
 #     print("hiiii")

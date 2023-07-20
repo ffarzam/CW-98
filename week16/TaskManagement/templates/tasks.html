@@ -16,12 +16,23 @@
 
     <div>
         <select class="form-select" name="select">
-            <option selected> {% if request.GET.select %}{{ request.GET.select }}{% else %}Sorting method{% endif %}</option>
-            {% if request.GET.select != "No Order" %}<option value="No Order">No Order</option>{% endif %}
-            {% if request.GET.select != "Title_ASC" %}<option value="Title_ASC">Title_ASC</option>{% endif %}
-            {% if request.GET.select != "Title_DESC" %}<option value="Title_DESC">Title_DESC</option>{% endif %}
-            {% if request.GET.select != "Date_ASC" %}<option value="Date_ASC">Date_ASC</option>{% endif %}
-            {% if request.GET.select != "Date_DESC" %}<option  value="Date_DESC">Date_DESC</option>{% endif %}
+            <option selected> {% if request.GET.select %}{{ request.GET.select }}{% else %}Sorting method{% endif %}
+            </option>
+            {% if request.GET.select != "No Order" %}
+            <option value="No Order">No Order</option>
+            {% endif %}
+            {% if request.GET.select != "Title_ASC" %}
+            <option value="Title_ASC">Title_ASC</option>
+            {% endif %}
+            {% if request.GET.select != "Title_DESC" %}
+            <option value="Title_DESC">Title_DESC</option>
+            {% endif %}
+            {% if request.GET.select != "Date_ASC" %}
+            <option value="Date_ASC">Date_ASC</option>
+            {% endif %}
+            {% if request.GET.select != "Date_DESC" %}
+            <option value="Date_DESC">Date_DESC</option>
+            {% endif %}
         </select>
     </div>
     <div class="form-check">
@@ -34,14 +45,14 @@
     <div class="form-check">
         <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="doing"
                {% if request.GET.gridRadios == 'doing' %}checked{% endif %}>
-        <label class="form-check-label" for="gridRadios1">
+        <label class="form-check-label" for ="gridRadios1">
             Doing
         </label>
     </div>
     <div class="form-check">
         <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios3" value="done"
                {% if request.GET.gridRadios == 'done' %}checked{% endif %}>
-        <label class="form-check-label" for="gridRadios2">
+        <label class="form-check-label" for ="gridRadios2">
             Done
         </label>
     </div>
@@ -89,6 +100,70 @@
     </span>
     </div>
 </div>
+
+<!-- Form Post -->
+<article class="mb-4">
+    <div class="container px-4 px-lg-5">
+        <!--{{author}}-->
+        <form class=" row gx-4 gx-lg-5 justify-content-center needs-validation" method="POST">
+            {% csrf_token %}
+            <div>
+                <h4>Create a Task</h4>
+            </div>
+            <div>
+
+                <div>
+                    <label for="formGroupExampleInput2">title</label>
+                    <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="title"
+                           name="title">
+                </div>
+                <div>
+                    <label for="formGroupExampleInput3">due_date</label>
+                    <input type="date" class="form-control" id="formGroupExampleInput3" placeholder="due_date"
+                           name="due_date">
+                </div>
+                <div>
+                <select class="form-select" name="category">
+                    <option selected> choose the category</option>
+                    {% for category in all_category %}
+                    <option value="{{category.id}}">{{category.name}}</option>
+                    {% endfor %}
+                </select>
+                    </div>
+                <div>
+                <select class="form-select" name="status">
+                    <option selected> choose the status</option>
+                    {% for status in all_status %}
+                    <option value="{{status}}">{{status}}</option>
+                    {% endfor %}
+                </select>
+                    </div>
+                <div class="dropdown col-sm-2">
+                        <button class="btn btn-warning bg-success dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                        Tags
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <input class="form-control ins" id="myInput2" type="text" placeholder="Search..">
+                            {% for tag in all_tags %}
+                            <li><span style="margin-left:20px">{{ tag.name }}</span><input class="mx-2 px-2" type="checkbox" name="tag" value="{{ tag.id }}" aria-label="Checkbox for following text input" style="margin-left: 15px;"></li>
+                            {% endfor %}
+                        </ul>
+
+                    </div>
+
+                <div>
+
+                <textarea cols="50" name="content" id="content" style="font-family:sans-serif;font-size:1.2em;">
+
+                </textarea>
+                </div>
+            </div>
+            <div>
+                <button class="button-85">Submit</button>
+            </div>
+        </form>
+    </div>
+</article>
 {%endblock%}
 
 

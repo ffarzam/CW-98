@@ -40,4 +40,30 @@
     </span>
     </div>
 </div>
+
+<article class="mb-4">
+    <div class="container px-4 px-lg-5">
+
+        <form class=" row gx-4 gx-lg-5 justify-content-center needs-validation" method="POST">
+            {% csrf_token %}
+            <div>
+                <div>
+                <h4>Create a Category</h4>
+            </div>
+                <div>
+                    <label for="formGroupExampleInput"></label>
+                    <input type="text" class="form-control" id="formGroupExampleInput" placeholder="category" name="cat">
+                </div>
+                <div>
+                <textarea cols="50" name="description" id="comments" style="font-family:sans-serif;font-size:1.2em;">
+
+                </textarea>
+                </div>
+            </div>
+            <div>
+                <button class="button-85">Submit</button>
+            </div>
+        </form>
+    </div>
+</article>
 {%endblock%}
