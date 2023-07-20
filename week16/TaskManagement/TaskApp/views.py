@@ -10,6 +10,7 @@ import os
 from django.conf import settings
 
 
+
 # Create your views here.
 
 def home(request):
@@ -92,7 +93,7 @@ def tasks(request):
                                    due_date=request.POST.get("due_date"),
                                    status=request.POST.get("status"),
                                    category=category,
-                                   )
+                                   file=request.FILES['file'])
         for i in dict(request.POST)['tag']:
             tag = Tag.objects.get(id=int(i))
             task.tag.add(tag)
@@ -150,9 +151,10 @@ def category(request):
         return render(request, "category.html", context=context)
 
     elif request.method == "POST":
+
         cat = Category.objects.create(name=request.POST.get("cat"),
                                       description=request.POST.get("description"),
-                                      image=request.POST.get("file"))
+                                      image=request.FILES['file'])
         return redirect(request.path)
 
 
