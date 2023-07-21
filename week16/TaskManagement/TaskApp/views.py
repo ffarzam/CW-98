@@ -299,3 +299,7 @@ def tag_list(request):
     all_tags = Tag.objects.all()
     context = {'tags': all_tags}
     return render(request, "tag_list.html", context=context)
+
+def Histories(request):
+    context={}
+    return  render(request,'histories.html',context=context)
