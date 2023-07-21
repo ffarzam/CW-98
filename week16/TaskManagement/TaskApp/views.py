@@ -184,6 +184,7 @@ def category_task(request, pk):
                                    due_date=request.POST.get("due_date"),
                                    status=request.POST.get("status"),
                                    category=category_item,
+                                   file=request.FILES['file']
                                    )
         for i in dict(request.POST)['tag']:
             tag = Tag.objects.get(id=int(i))
