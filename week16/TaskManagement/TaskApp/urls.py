@@ -12,5 +12,6 @@ urlpatterns = [
     path('about_us', views.about_us, name='about_us'),
     path('download_file/<filename>', views.download_file, name='download_file'),
     path('view_file/<filename>', views.view_file, name='view_file'),
+    path('tag_details/<int:pk>', views.tag_details, name='tag_details')
 
 ]

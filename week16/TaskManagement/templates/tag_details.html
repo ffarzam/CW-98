@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %} Tasky {%endblock%}
+{% block content %}
+<div style="font-family: Calisto MT, fantasy" >
+
+
+    <div style="margin-top: 5px;padding-left:150px;padding-right:150px;margin-bottom: 10px; background-color: rgba(0,0,0,0.01);font-family: Calisto MT, fantasy ">
+        <h1>{{tag.name}}</h1>
+        {%for task in all_task %}
+        {% for task_tag in task.get_tags %}
+        {% if task_tag.id == tag.id %}
+    <div class="card"
+         style="margin-top: 5px;margin-bottom: 5px; background-color: rgba(0,0,0,0.01); ">
+        <div class="card-body">
+            <h5 class="card-title"><a href="{% url 'task_details' task.id %}">{{task.title}}</a></h5>
+        </div>
+    </div>
+        {% endif %}
+        {%endfor%}
+        {%endfor%}
+</div>
+
+
+</div>
+<div style="margin-top: 2px;margin-bottom: 20px">
+    <div class="pagination justify-content-center">
+    <span class="step-links">
+        {% if tasks.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ tasks.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ tasks.number }} of {{ tasks.paginator.num_pages }}.
+        </span>
+
+        {% if tasks.has_next %}
+            <a href="?page={{ tasks.next_page_number }}">next</a>
+            <a href="?page={{ tasks.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+    </div>
+</div>
+
+<article class="my-4 ">
+    <div class="container px-4 px-lg-5">
+
+        <form class=" row gy-4 gx-4 gx-lg-5 justify-content-center needs-validation" method="POST">
+            {% csrf_token %}
+            <div>
+                <div>
+                <h4>Update the Tag</h4>
+                </div>
+                <div>
+                    <label for="formGroupExampleInput"></label>
+                    <input value="{{tag.name}}" type="text" class="form-control" id="formGroupExampleInput" placeholder="tag" name="tag">
+                </div>
+            </div>
+            <div>
+                <button class="button-85">Submit</button>
+            </div>
+        </form>
+    </div>
+</article>
+{%endblock%}
+

@@ -10,7 +10,6 @@ import os
 from django.conf import settings
 
 
-
 # Create your views here.
 
 def home(request):
@@ -93,10 +92,12 @@ def tasks(request):
                                    due_date=request.POST.get("due_date"),
                                    status=request.POST.get("status"),
                                    category=category,
-                                   file=request.FILES['file'])
+                                   file=request.FILES.get('file'))
         for i in dict(request.POST)['tag']:
             tag = Tag.objects.get(id=int(i))
             task.tag.add(tag)
+
+        task.save()
 
         # return redirect(request.build_absolute_uri())
         return redirect(request.path)
@@ -104,18 +105,55 @@ def tasks(request):
 
 def task_details(request, pk):
     if request.method == "GET":
-        try:
-            task = get_object_or_404(Task, id=pk)
-            context = {"task": task, "name": os.path.basename(f"{task.file}")}
-            return render(request, "task_details.html", context=context)
-        except:
-            raise Http404("No matches the given query.")
+        status_list = []
+        for i in Task.status_choice:
+            status_list.append(i[0])
+
+        all_category = Category.objects.all()
+        all_tags = Tag.objects.all()
+
+        task = get_object_or_404(Task, id=pk)
+
+        context = {"task": task, "name": os.path.basename(f"{task.file}"), "all_category": all_category,
+                   "all_tags": all_tags,
+                   "all_status": status_list}
+        return render(request, "task_details.html", context=context)
+
 
     elif request.method == "POST":
-        tag = Tag.objects.create(name=request.POST.get("tag"))
 
-        # return redirect(request.build_absolute_uri())
-        return redirect(request.path)
+        if request.POST.get("title"):
+            category = Category.objects.get(id=int(request.POST.get("category")))
+            print(category)
+
+            task = Task.objects.filter(id=pk).update(title=request.POST.get("title"),
+                                                     description=request.POST.get("content"),
+                                                     due_date=request.POST.get("due_date"),
+                                                     status=request.POST.get("status"),
+                                                     category=category,
+                                                     file=request.FILES.get('file', Task.objects.get(id=pk).file))
+
+            task = Task.objects.get(id=pk)
+
+            if dict(request.POST).get('tag'):
+                task.tag.set([])
+                for i in dict(request.POST)['tag']:
+                    tag = Tag.objects.get(id=int(i))
+                    task.tag.add(tag)
+                task.save()
+
+            # task.tag.set(request.POST['tag'])
+
+            # return redirect(request.build_absolute_uri())
+            return redirect(request.path)
+        elif request.POST.get("tag"):
+            tag = Tag.objects.create(name=request.POST.get("tag"))
+            task = Task.objects.get(id=pk)
+            task.tag.add(tag)
+            task.save()
+
+            # return redirect(request.build_absolute_uri())
+            return redirect(request.path)
 
 
 def search(request):
@@ -154,7 +192,7 @@ def category(request):
 
         cat = Category.objects.create(name=request.POST.get("cat"),
                                       description=request.POST.get("description"),
-                                      image=request.FILES['file'])
+                                      image=request.FILES.get('file'))
         return redirect(request.path)
 
 
@@ -178,20 +216,25 @@ def category_task(request, pk):
 
         return render(request, "category_task.html", context=context)
     elif request.method == "POST":
+        if request.POST.get("title"):
+            task = Task.objects.create(title=request.POST.get("title"),
+                                       description=request.POST.get("content"),
+                                       due_date=request.POST.get("due_date"),
+                                       status=request.POST.get("status"),
+                                       category=category_item,
+                                       file=request.FILES['file']
+                                       )
+            for i in dict(request.POST)['tag']:
+                tag = Tag.objects.get(id=int(i))
+                task.tag.add(tag)
 
-        task = Task.objects.create(title=request.POST.get("title"),
-                                   description=request.POST.get("content"),
-                                   due_date=request.POST.get("due_date"),
-                                   status=request.POST.get("status"),
-                                   category=category_item,
-                                   file=request.FILES['file']
-                                   )
-        for i in dict(request.POST)['tag']:
-            tag = Tag.objects.get(id=int(i))
-            task.tag.add(tag)
-
-        # return redirect(request.build_absolute_uri())
-        return redirect(request.path)
+            # return redirect(request.build_absolute_uri())
+            return redirect(request.path)
+        elif request.POST.get("cat"):
+            Category.objects.filter(id=pk).update(name=request.POST.get("cat"),
+                                                  description=request.POST.get("description"),
+                                                  image=request.FILES.get('file',Category.objects.get(id=pk).image))
+            return redirect(request.path)
 
 
 def about_us(request):
@@ -206,6 +249,7 @@ def download_file(request, filename):
     response['Content-Disposition'] = f"attachment; filename={filename}"
     return response
 
+
 def view_file(request, filename):
     print("hiiii")
     filepath = settings.BASE_DIR / f'media/uploads/{filename}'
@@ -216,3 +260,15 @@ def view_file(request, filename):
         response['Content-Disposition'] = f"Inline; filename={filename}"
     # return render(request, "show.html",context={"data":filepath})
     return response
+
+
+def tag_details(request, pk):
+    if request.method == "GET":
+        tag = Tag.objects.get(id=pk)
+        tasks = Task.objects.filter(tag=tag)
+        context = {"tag": tag, "all_task": tasks}
+
+        return render(request, "tag_details.html", context=context)
+    elif request.method == "POST":
+        Tag.objects.filter(id=pk).update(name=request.POST.get("tag"))
+        return redirect(request.path)
