@@ -1,14 +1,12 @@
 {% extends "base.html" %}
 {% block title %} Tasky {%endblock%}
 {% block content %}
-<div style="margin-top: 30px;padding-left:150px;margin-bottom: 20px;">
+<div class="container">
 
-    <div class="d-flex justify-content-between"
-         style="margin-top: 10px;padding-right:150px;margin-bottom: 10px;">
-        <div >
-            <h3>{{task.title}}</h3>
-            <small>Status: {{task.status}}</small>
-            <h6>Due_date: {{task.due_date}}</h6>
+    <div class="d-flex flex-wrap row-gap-3 column-gap-3 justify-content-between align-items-center mb-4 "
+         >
+        <div>
+            <h3 >{{task.title}}</h3>
         </div>
         {%if task.file %}
         <a href="{% url 'download_file' name %}">
@@ -17,6 +15,8 @@
         <a href="{% url 'view_file' name %}" target="_new"> <button class="button-85" role="button">Show</button></a>
         {% endif %}
     </div>
+    <small>Status: {{task.status}}</small>
+            <h6>Due_date: {{task.due_date}}</h6>
 
     <small>Category: {{task.category}}</small><br>
 
