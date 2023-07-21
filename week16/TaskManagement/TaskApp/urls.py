@@ -12,6 +12,10 @@ urlpatterns = [
     path('about_us', views.about_us, name='about_us'),
     path('download_file/<filename>', views.download_file, name='download_file'),
     path('view_file/<filename>', views.view_file, name='view_file'),
-    path('tag_details/<int:pk>', views.tag_details, name='tag_details')
+    path('tag_details/<int:pk>', views.tag_details, name='tag_details'),
+    path('delete_category/<int:pk>', views.delete_category, name='delete_category'),
+    path('delete_task/<int:pk>', views.delete_task, name='delete_task'),
+    path('tag_list/', views.tag_list, name='tag_list'),
+    path('delete_tag/<int:pk>', views.delete_tag, name='delete_tag'),
 
 ]

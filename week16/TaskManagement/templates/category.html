@@ -15,9 +15,14 @@
          style="background-color: rgba(0,0,0,0.01); ">
 
         <div class="card-body">
-            <h5 class="card-title"><a href="{% url 'category_task' category.id %}">{{category.name}}</a></h5>
+            <div class="d-flex justify-content-between">
+            <h5 ><a href="{% url 'category_task' category.id %}">{{category.name}}</a></h5>
+
+            <h5 ><a href="{% url 'delete_category' category.id %}">delete</a></h5>
+            </div>
 
         </div>
+
     </div>
 </div>
 

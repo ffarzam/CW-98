@@ -230,10 +230,11 @@ def category_task(request, pk):
 
             # return redirect(request.build_absolute_uri())
             return redirect(request.path)
+
         elif request.POST.get("cat"):
             Category.objects.filter(id=pk).update(name=request.POST.get("cat"),
                                                   description=request.POST.get("description"),
-                                                  image=request.FILES.get('file',Category.objects.get(id=pk).image))
+                                                  image=request.FILES.get('file', Category.objects.get(id=pk).image))
             return redirect(request.path)
 
 
@@ -251,7 +252,6 @@ def download_file(request, filename):
 
 
 def view_file(request, filename):
-    print("hiiii")
     filepath = settings.BASE_DIR / f'media/uploads/{filename}'
     #
     mime_type, _ = mimetypes.guess_type(filepath)
@@ -272,3 +272,30 @@ def tag_details(request, pk):
     elif request.method == "POST":
         Tag.objects.filter(id=pk).update(name=request.POST.get("tag"))
         return redirect(request.path)
+
+
+def delete_category(request, pk):
+    q = Category.objects.filter(id=pk)
+    if q:
+        q.delete()
+    return redirect("category")
+
+
+def delete_task(request, pk):
+    q = Task.objects.filter(id=pk)
+    if q:
+        q.delete()
+    return redirect("tasks")
+
+
+def delete_tag(request, pk):
+    q = Tag.objects.filter(id=pk)
+    if q:
+        q.delete()
+    return redirect("tag_list")
+
+
+def tag_list(request):
+    all_tags = Tag.objects.all()
+    context = {'tags': all_tags}
+    return render(request, "tag_list.html", context=context)

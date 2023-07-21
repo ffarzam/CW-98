@@ -10,6 +10,9 @@
     <a href="{% url 'category'%}">
         <button class="button-85" role="button">Category</button>
     </a>
+    <a href="{% url 'tag_list' %}">
+        <button class="button-85" role="button">Tags</button>
+    </a>
 </div>
 
 <form action="." class="d-flex flex-wrap row-gap-3 column-gap-2 align-items-center justify-content-center justify-content-sm-between mb-4" method="GET">
@@ -64,6 +67,7 @@
         <div class="card-body d-flex justify-content-between">
             <h5 class="card-title"><a href="{% url 'task_details' task.id %}">{{task.title}}</a></h5>
             <span>{{task.due_date}}</span>
+            <a href="{% url 'delete_task' task.id %}">delete</a>
         </div>
     </div>
 

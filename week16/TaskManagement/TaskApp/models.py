@@ -33,7 +33,7 @@ class Task(models.Model):
     description = models.TextField()
     due_date = models.DateField()
     status = models.CharField(max_length=20, choices=status_choice)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL,null=True)
     tag = models.ManyToManyField(Tag)
     file = models.FileField(upload_to='uploads/', null=True, blank=True)
 
