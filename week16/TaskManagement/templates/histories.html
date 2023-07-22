@@ -3,10 +3,26 @@
 {% block content %}
 
 
-{% for history in massage|safeseq %}
+<!--{% for history in massage %}-->
 
-<h2>{{history|safe}}</h2>
-{% endfor %}
+<!--<h2>{{history}}</h2>-->
+<!--{% endfor %}-->
 
 
+<header class="d-flex flex-column justify-content-center h-100 py-5">
+    <div class="container px-5">
+        <div class="row gx-5 justify-content-center">
+            <div class="col-lg-6">
+                <div class="text-center my-5">
+                    {% for his in massage%}
+                    <h2>
+                        {{ his }}
+                        {% endfor %}
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</header>
 {%endblock%}

@@ -6,3 +6,5 @@ from .models import Category, Task, Tag
 admin.site.register(Category)
 admin.site.register(Task)
 admin.site.register(Tag)
+
+

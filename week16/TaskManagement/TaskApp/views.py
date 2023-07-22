@@ -99,9 +99,24 @@ def tasks(request):
             task.tag.add(tag)
 
         task.save()
+        ######################################################333
+        if not request.COOKIES.get('history'):
 
+            response = redirect(request.path)
+            response.set_cookie('history', ['You create a Task'])
+            return response
+        else:
+            res = request.COOKIES.get('history')
+            print(res)
+            res = eval(res)
+            res.append('You create a Task')
+
+            response = redirect(request.path)
+            response.set_cookie('history', res)
+            return response
+        ######################################################333
         # return redirect(request.build_absolute_uri())
-        return redirect(request.path)
+        # return redirect(request.path)
 
 
 def task_details(request, pk):
@@ -124,12 +139,12 @@ def task_details(request, pk):
         if request.POST.get("title"):
             category = Category.objects.get(id=int(request.POST.get("category")))
 
-            Task.objects.filter(id=pk).update(title=request.POST.get("title"),
-                                              description=request.POST.get("content"),
-                                              due_date=request.POST.get("due_date"),
-                                              status=request.POST.get("status"),
-                                              category=category,
-                                              file=Task.objects.get(id=pk).file)
+            task = Task.objects.filter(id=pk).update(title=request.POST.get("title"),
+                                                     description=request.POST.get("content"),
+                                                     due_date=request.POST.get("due_date"),
+                                                     status=request.POST.get("status"),
+                                                     category=category,
+                                                     )
             if request.FILES.get('file'):
                 # file_name = file.name
                 # f = FileSystemStorage(location=settings.MEDIA_ROOT/"uploads/")
@@ -138,8 +153,8 @@ def task_details(request, pk):
                 # file_url = f.url(main_file)
                 # print(file_url)
 
-                task = Task.objects.get(id=pk)
-                task.file=request.FILES.get('file')
+                task = task.get()
+                task.file = request.FILES.get('file')
                 task.save()
 
             task = Task.objects.get(id=pk)
@@ -150,17 +165,50 @@ def task_details(request, pk):
                     tag = Tag.objects.get(id=int(i))
                     task.tag.add(tag)
                 task.save()
+            ######################################################333
+            if not request.COOKIES.get('history'):
+
+                response = redirect(request.path)
+                response.set_cookie('history', ['You update a Task'])
+                return response
+            else:
+                res = request.COOKIES.get('history')
+                print(res)
+                res = eval(res)
+                res.append('You update a Task')
+
+                response = redirect(request.path)
+                response.set_cookie('history', res)
+                return response
+            ######################################################333
 
             # return redirect(request.build_absolute_uri())
-            return redirect(request.path)
+            # return redirect(request.path)
+
         elif request.POST.get("tag"):
             tag = Tag.objects.create(name=request.POST.get("tag"))
             task = Task.objects.get(id=pk)
             task.tag.add(tag)
             task.save()
+            ######################################################333
+            if not request.COOKIES.get('history'):
+
+                response = redirect(request.path)
+                response.set_cookie('history', ['You create a Tag'])
+                return response
+            else:
+                res = request.COOKIES.get('history')
+                print(res)
+                res=eval(res)
+                res.append('You create a Tag')
+
+                response = redirect(request.path)
+                response.set_cookie('history', res)
+                return response
+            ######################################################333
 
             # return redirect(request.build_absolute_uri())
-            return redirect(request.path)
+            # return redirect(request.path)
 
 
 def search(request):
@@ -200,7 +248,22 @@ def category(request):
         cat = Category.objects.create(name=request.POST.get("cat"),
                                       description=request.POST.get("description"),
                                       image=request.FILES.get('file'))
-        return redirect(request.path)
+        ######################################################333
+        if not request.COOKIES.get('history'):
+
+            response = redirect(request.path)
+            response.set_cookie('history', ['You create a category'])
+            return response
+        else:
+            res = request.COOKIES.get('history')
+            print(res)
+            res = eval(res)
+            res.append('You create a category')
+
+            response = redirect(request.path)
+            response.set_cookie('history', res)
+            return response
+        ######################################################333
 
 
 def category_task(request, pk):
@@ -247,7 +310,23 @@ def category_task(request, pk):
                 category.image = request.FILES.get('file')
                 category.save()
 
-            return redirect(request.path)
+            ######################################################333
+            if not request.COOKIES.get('history'):
+
+                response = redirect(request.path)
+                response.set_cookie('history', ['You update a category'])
+                return response
+            else:
+                res = request.COOKIES.get('history')
+                print(res)
+                res = eval(res)
+                res.append('You update a category')
+
+                response = redirect(request.path)
+                response.set_cookie('history', res)
+                return response
+            ######################################################333
+            # return redirect(request.path)
 
 
 def about_us(request):
@@ -283,7 +362,22 @@ def tag_details(request, pk):
         return render(request, "tag_details.html", context=context)
     elif request.method == "POST":
         Tag.objects.filter(id=pk).update(name=request.POST.get("tag"))
-        return redirect(request.path)
+        ######################################################333
+        if not request.COOKIES.get('history'):
+
+            response = redirect(request.path)
+            response.set_cookie('history', ['You update a tag'])
+            return response
+        else:
+            res = request.COOKIES.get('history')
+            print(res)
+            res = eval(res)
+            res.append('You update a tag')
+
+            response = redirect(request.path)
+            response.set_cookie('history', res)
+            return response
+        ######################################################333
 
 
 def delete_category(request, pk):
@@ -321,6 +415,8 @@ def Histories(request):
     else:
         res = request.COOKIES.get('history')
         print(res)
+        print(type(res))
+        res = eval(res)
 
         context = {"massage": res}
         response = render(request, 'histories.html', context=context)
