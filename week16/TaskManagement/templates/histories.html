@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %} Tasky {%endblock%}
+{% block content %}
+
+
+{% for history in massage|safeseq %}
+
+<h2>{{history|safe}}</h2>
+{% endfor %}
+
+
+{%endblock%}

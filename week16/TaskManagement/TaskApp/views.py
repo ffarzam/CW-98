@@ -8,6 +8,7 @@ import mimetypes
 from django.http.response import HttpResponse, FileResponse
 import os
 from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
 
 # Create your views here.
@@ -119,19 +120,27 @@ def task_details(request, pk):
                    "all_status": status_list}
         return render(request, "task_details.html", context=context)
 
-
     elif request.method == "POST":
-
         if request.POST.get("title"):
             category = Category.objects.get(id=int(request.POST.get("category")))
-            print(category)
 
-            task = Task.objects.filter(id=pk).update(title=request.POST.get("title"),
-                                                     description=request.POST.get("content"),
-                                                     due_date=request.POST.get("due_date"),
-                                                     status=request.POST.get("status"),
-                                                     category=category,
-                                                     file=request.FILES.get('file', Task.objects.get(id=pk).file))
+            Task.objects.filter(id=pk).update(title=request.POST.get("title"),
+                                              description=request.POST.get("content"),
+                                              due_date=request.POST.get("due_date"),
+                                              status=request.POST.get("status"),
+                                              category=category,
+                                              file=Task.objects.get(id=pk).file)
+            if request.FILES.get('file'):
+                # file_name = file.name
+                # f = FileSystemStorage(location=settings.MEDIA_ROOT/"uploads/")
+                # print(f)
+                # main_file = f.save(file_name, file)
+                # file_url = f.url(main_file)
+                # print(file_url)
+
+                task = Task.objects.get(id=pk)
+                task.file=request.FILES.get('file')
+                task.save()
 
             task = Task.objects.get(id=pk)
 
@@ -141,8 +150,6 @@ def task_details(request, pk):
                     tag = Tag.objects.get(id=int(i))
                     task.tag.add(tag)
                 task.save()
-
-            # task.tag.set(request.POST['tag'])
 
             # return redirect(request.build_absolute_uri())
             return redirect(request.path)
@@ -234,7 +241,12 @@ def category_task(request, pk):
         elif request.POST.get("cat"):
             Category.objects.filter(id=pk).update(name=request.POST.get("cat"),
                                                   description=request.POST.get("description"),
-                                                  image=request.FILES.get('file', Category.objects.get(id=pk).image))
+                                                  image=Category.objects.get(id=pk).image)
+            if request.FILES.get('file'):
+                category = Category.objects.get(id=pk)
+                category.image = request.FILES.get('file')
+                category.save()
+
             return redirect(request.path)
 
 
@@ -300,6 +312,17 @@ def tag_list(request):
     context = {'tags': all_tags}
     return render(request, "tag_list.html", context=context)
 
+
 def Histories(request):
-    context={}
-    return  render(request,'histories.html',context=context)
+    if not request.COOKIES.get('history'):
+        context = {"massage": ['No History', ]}
+        response = render(request, 'histories.html', context=context)
+        return response
+    else:
+        res = request.COOKIES.get('history')
+        print(res)
+
+        context = {"massage": res}
+        response = render(request, 'histories.html', context=context)
+
+        return response
