@@ -29,7 +29,7 @@ def login_view(request):
         form = LoginForm(request.POST)
         user = MyAuthBackend().authenticate(
             request,
-            username=form["username"].value(),
+            username=form["username_email"].value(),
             password=form["password"].value())
         if user is None:
             message = "user or password is invalid"
