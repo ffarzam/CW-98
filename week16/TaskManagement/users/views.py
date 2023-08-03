@@ -49,3 +49,7 @@ def login_view(request):
         form = LoginForm()
         return render(request, 'register.html', {'form': form, "message": message})
 
+
+def logout_view(request):
+    logout(request)
+    return redirect("home")
