@@ -91,6 +91,10 @@
 <form action="" method="POST">
     <h3>Register Here</h3>
 
+    {% if message %}
+    <h6 class="mt-2">{{message}}</h6>
+    {% endif %}
+
     {% csrf_token %}
     {{ form.as_p }}
 
