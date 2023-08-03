@@ -12,9 +12,11 @@ class RegisterForm(forms.ModelForm):
 
 
 class LoginForm(forms.ModelForm):
-    username_or_email = forms.CharField(label='Username or Email')
-    password = forms.CharField(widget=forms.PasswordInput)
+    username_email = forms.CharField(label='Username or Email',
+                                     widget=forms.TextInput(attrs={
+                                         'placeholder': 'Enter Your Username or Email Here'}))
 
     class Meta:
         model = CustomUser
-        fields = ["username_or_email","password"]
+        fields = ["username_email", "password"]
+        widgets = {"password": forms.PasswordInput(attrs={'placeholder': 'Enter Your Password Here'})}

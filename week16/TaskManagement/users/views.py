@@ -27,17 +27,16 @@ def login_view(request):
     message = None
     if request.method == 'POST':
         form = LoginForm(request.POST)
-        if form.is_valid():
-            user = MyAuthBackend().authenticate(
-                request,
-                username=form.cleaned_data["username_or_email"],
-                password=form.cleaned_data["password"])
-            if user is None:
-                message = "user or passwords is invalid"
-                return render(request, 'login.html', {'form': form, "message": message})
+        user = MyAuthBackend().authenticate(
+            request,
+            username=form["username_email"].value(),
+            password=form["password"].value())
+        if user is None:
+            message = "user or password is invalid"
+            return render(request, 'login.html', {'form': form, "message": message})
 
-            login(request, user, backend='users.authentication.MyAuthBackend')
-            return redirect("home")
+        login(request, user, backend='users.authentication.MyAuthBackend')
+        return redirect("home")
 
     else:
         form = LoginForm()
