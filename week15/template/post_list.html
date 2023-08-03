@@ -4,8 +4,8 @@
 
 {%for post in all_posts %}
 <div style="margin-top: 30px;padding-left:150px;margin-bottom: 20px;">
-    <a href='{% url "post_details" post.id  %}'
->{{post.title}}</a >
+    <a href='{% url "post_details" post.id  %}'>{{post.title}}</a ><br>
+    <small>{{post.author}}</small>
 
 </div>
 

@@ -3,7 +3,7 @@
 {% block content %}
 <div style="margin-top: 30px;padding-left:150px;margin-bottom: 20px;">
   <h3>{{post.title}}</h3>
-  <small>{{post.author}}</small>
+  <a href='{% url "author_details" post.author %}'><small>{{post.author}}</small></a>
   <p>{{post.content}}</p>
   <small>{{post.publication_date}}</small>
   </div>
