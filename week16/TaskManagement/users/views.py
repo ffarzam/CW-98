@@ -5,12 +5,17 @@ from .forms import RegisterForm
 
 
 def register(request):
+    message = None
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('home')
+            if form.cleaned_data["password"] == form.cleaned_data["confirm_password"]:
+                form.save()
+                return redirect('home')
+            else:
+                message = "passwords don't match"
+
     else:
         form = RegisterForm()
 
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'register.html', {'form': form, "message": message})
