@@ -33,7 +33,7 @@ def login_view(request):
             username=form["username_email"].value(),
             password=form["password"].value())
         if user is None:
-            message = "user or password is invalid"
+            message = "username or password is invalid"
             form = LoginForm()
             return render(request, 'login.html', {'form': form, "message": message})
 
