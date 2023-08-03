@@ -6,21 +6,16 @@ class MyAuthBackend(ModelBackend):
 
     def authenticate(self, request, username=None, email=None, password=None, **kwargs):
 
-        # if username is None:
-        #     try:
-        #         user = CustomUser.objects.get(email=email)
-        #         return user
-        #     except CustomUser.DoesNotExist:
-        #         return
-
         if email is None:
             try:
                 user = CustomUser.objects.get(username=username)
-                return user
+                if user.check_password(password):
+                    return user
             except CustomUser.DoesNotExist:
                 try:
                     user = CustomUser.objects.get(email=username)
-                    return user
+                    if user.check_password(password):
+                        return user
                 except CustomUser.DoesNotExist:
                     return
 
