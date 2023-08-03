@@ -34,14 +34,14 @@ def login_view(request):
                 password=form.cleaned_data["password"])
             if user is None:
                 message = "user or passwords is invalid"
-                return render(request, 'register.html', {'form': form, "message": message})
+                return render(request, 'login.html', {'form': form, "message": message})
 
             login(request, user, backend='users.authentication.MyAuthBackend')
             return redirect("home")
 
     else:
         form = LoginForm()
-        return render(request, 'register.html', {'form': form, "message": message})
+        return render(request, 'login.html', {'form': form, "message": message})
 
 
 def logout_view(request):
