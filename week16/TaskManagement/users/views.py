@@ -16,6 +16,7 @@ def register(request):
                 return redirect('home')
             else:
                 message = "passwords don't match"
+                form = RegisterForm()
 
     else:
         form = RegisterForm()
