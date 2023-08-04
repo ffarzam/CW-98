@@ -1,5 +1,5 @@
 from django import forms
-from .models import Task
+from .models import Task, Tag
 
 
 class CreateTaskForm(forms.ModelForm):
@@ -14,3 +14,13 @@ class CreateTaskForm(forms.ModelForm):
                    "category": forms.Select(attrs={'class': 'form-control'}),
                    "tag": forms.SelectMultiple(attrs={'class': 'form-control'}),
                    "file": forms.FileInput(attrs={'class': 'form-control'}), }
+
+
+class CreateTagForm(forms.ModelForm):
+    class Meta:
+        model = Tag
+        fields = ["name"]
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+        }
