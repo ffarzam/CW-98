@@ -9,6 +9,9 @@ class RegisterForm(forms.ModelForm):
         model = CustomUser
         fields = ['username', 'email', 'password']
         widgets = {"password": forms.PasswordInput}
+        help_texts = {
+            'username': None,
+        }
 
 
 class LoginForm(forms.ModelForm):

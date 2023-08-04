@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import RegisterForm, LoginForm
 from django.contrib.auth import login, logout
 from .authentication import MyAuthBackend
+from django.contrib.auth.hashers import make_password
 
 # Create your views here.
 
@@ -12,7 +13,11 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             if form.cleaned_data["password"] == form.cleaned_data["confirm_password"]:
-                form.save()
+
+                user = form.save(commit=False)
+                user.password = make_password(form.cleaned_data["password"])
+                user = form.save()
+                request.session["register_session"] = user.username
                 return redirect('home')
             else:
                 message = "passwords don't match"
@@ -25,6 +30,8 @@ def register(request):
 
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect("home")
     message = None
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -38,6 +45,7 @@ def login_view(request):
             return render(request, 'login.html', {'form': form, "message": message})
 
         login(request, user, backend='users.authentication.MyAuthBackend')
+        request.session["login_session"] = user.username
         return redirect("home")
 
     else:
