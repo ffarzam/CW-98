@@ -18,7 +18,7 @@ class CreateTaskForm(forms.ModelForm):
 
 class CreateTagForm(forms.ModelForm):
     class Meta:
-        model = Task
+        model = Tag
         fields = "__all__"
 
         widgets = {
