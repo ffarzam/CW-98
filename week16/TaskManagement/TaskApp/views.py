@@ -176,26 +176,28 @@ def task_details(request, pk):
                 return response
             ######################################################333
 
-        elif 'tag_create' in request.POST:
 
-            form = CreateTagForm(request.POST)
-            if form.is_valid():
-                tag = form.save()
-                task.tag.add(tag)
-                task.save()
-                if not request.COOKIES.get('history'):
-                    response = redirect(request.path)
-                    response.set_cookie('history', ['You create a Tag'])
-                    return response
+def create_tag(request, pk):
+    task = get_object_or_404(Task, id=pk)
+    form = CreateTagForm(request.POST)
+    print(form.is_valid())
+    if form.is_valid():
+        tag = form.save()
+        task.tag.add(tag)
+        task.save()
+        if not request.COOKIES.get('history'):
+            response = redirect("task_details", pk)
+            response.set_cookie('history', ['You create a Tag'])
+            return response
 
-                else:
-                    res = request.COOKIES.get('history')
-                    print(res)
-                    res = eval(res)
-                    res.append('You create a Tag')
-                    response = redirect(request.path)
-                    response.set_cookie('history', res)
-                    return response
+        else:
+            res = request.COOKIES.get('history')
+            print(res)
+            res = eval(res)
+            res.append('You create a Tag')
+            response = redirect("task_details", pk)
+            response.set_cookie('history', res)
+            return response
 
 
 def search(request):
