@@ -34,12 +34,11 @@
 <article class="my-4 ">
     <div class="container px-4 px-lg-5">
 
-        <form name="tag_create" class=" row gy-4 gx-4 gx-lg-5 justify-content-center needs-validation" method="POST">
+        <form action="{% url 'create_tag' task.id %}" name="tag_create" class=" row gy-4 gx-4 gx-lg-5 justify-content-center needs-validation" method="POST">
             {% csrf_token %}
             {{form.as_p}}
-            <div>
-                <button type="submit" class="button-85">Submit</button>
-            </div>
+            <div><button type="submit" class="button-85">Submit</button></div>
+
         </form>
     </div>
 </article>
