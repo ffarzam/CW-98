@@ -8,7 +8,7 @@ import mimetypes
 from django.http.response import HttpResponse, FileResponse
 import os
 from django.conf import settings
-from django.core.files.storage import FileSystemStorage
+from .forms import CreateTaskForm
 
 
 # Create your views here.
@@ -78,27 +78,18 @@ def tasks(request):
         status_list = []
         for i in Task.status_choice:
             status_list.append(i[0])
-
+        form = CreateTaskForm
         context = {"tasks": page_obj, "all_category": all_category, "all_tags": all_tags,
-                   "all_status": status_list}
+                   "all_status": status_list, 'form': form}
         return render(request, "tasks.html", context=context)
 
     elif request.method == "POST":
-        print(int(request.POST.get("category")))
-        category = Category.objects.get(id=int(request.POST.get("category")))
-        print(category)
+        form = CreateTaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.user = request.user
+            task.save()
 
-        task = Task.objects.create(title=request.POST.get("title"),
-                                   description=request.POST.get("content"),
-                                   due_date=request.POST.get("due_date"),
-                                   status=request.POST.get("status"),
-                                   category=category,
-                                   file=request.FILES.get('file'))
-        for i in dict(request.POST)['tag']:
-            tag = Tag.objects.get(id=int(i))
-            task.tag.add(tag)
-
-        task.save()
         ######################################################333
         if not request.COOKIES.get('history'):
 
