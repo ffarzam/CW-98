@@ -19,7 +19,7 @@ class CreateTaskForm(forms.ModelForm):
 class CreateTagForm(forms.ModelForm):
     class Meta:
         model = Tag
-        fields = "__all__"
+        fields = ["name"]
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
