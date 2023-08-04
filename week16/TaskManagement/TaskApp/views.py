@@ -8,7 +8,7 @@ import mimetypes
 from django.http.response import HttpResponse, FileResponse
 import os
 from django.conf import settings
-from .forms import CreateTaskForm
+from .forms import CreateTaskForm, CreateTagForm
 
 
 # Create your views here.
@@ -120,13 +120,16 @@ def task_details(request, pk):
         all_tags = Tag.objects.all()
 
         task = get_object_or_404(Task, id=pk)
-
+        form = CreateTagForm
         context = {"task": task, "name": os.path.basename(f"{task.file}"), "all_category": all_category,
                    "all_tags": all_tags,
-                   "all_status": status_list}
+                   "all_status": status_list,
+                   "form": form}
         return render(request, "task_details.html", context=context)
 
     elif request.method == "POST":
+        task = get_object_or_404(Task, id=pk)
+
         if request.POST.get("title"):
             category = Category.objects.get(id=int(request.POST.get("category")))
 
@@ -173,33 +176,26 @@ def task_details(request, pk):
                 return response
             ######################################################333
 
-            # return redirect(request.build_absolute_uri())
-            # return redirect(request.path)
+        elif 'tag_create' in request.POST:
 
-        elif request.POST.get("tag"):
-            tag = Tag.objects.create(name=request.POST.get("tag"))
-            task = Task.objects.get(id=pk)
-            task.tag.add(tag)
-            task.save()
-            ######################################################333
-            if not request.COOKIES.get('history'):
+            form = CreateTagForm(request.POST)
+            if form.is_valid():
+                tag = form.save()
+                task.tag.add(tag)
+                task.save()
+                if not request.COOKIES.get('history'):
+                    response = redirect(request.path)
+                    response.set_cookie('history', ['You create a Tag'])
+                    return response
 
-                response = redirect(request.path)
-                response.set_cookie('history', ['You create a Tag'])
-                return response
-            else:
-                res = request.COOKIES.get('history')
-                print(res)
-                res=eval(res)
-                res.append('You create a Tag')
-
-                response = redirect(request.path)
-                response.set_cookie('history', res)
-                return response
-            ######################################################333
-
-            # return redirect(request.build_absolute_uri())
-            # return redirect(request.path)
+                else:
+                    res = request.COOKIES.get('history')
+                    print(res)
+                    res = eval(res)
+                    res.append('You create a Tag')
+                    response = redirect(request.path)
+                    response.set_cookie('history', res)
+                    return response
 
 
 def search(request):
