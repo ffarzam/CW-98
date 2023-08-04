@@ -37,6 +37,9 @@
         <form name="tag_create" class=" row gy-4 gx-4 gx-lg-5 justify-content-center needs-validation" method="POST">
             {% csrf_token %}
             {{form.as_p}}
+            <div>
+                <button type="submit" class="button-85">Submit</button>
+            </div>
         </form>
     </div>
 </article>
