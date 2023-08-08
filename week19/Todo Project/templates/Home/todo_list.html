@@ -3,9 +3,11 @@
 
 {% block content %}
 {% for todo in todos %}
+{% if todo.user == request.user %}
     <div class="card">
         <a href="{% url 'todo_detail' todo.id %}">{{ todo }}</a>
 
     </div>
+{% endif %}
 {% endfor %}
 {% endblock %}
