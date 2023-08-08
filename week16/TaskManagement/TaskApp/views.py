@@ -9,6 +9,8 @@ from django.http.response import HttpResponse, FileResponse
 import os
 from django.conf import settings
 from .forms import CreateTaskForm, CreateTagForm
+from .mixins import TaskMixin
+from django.views import View
 
 
 # Create your views here.
@@ -411,3 +413,10 @@ def Histories(request):
         response = render(request, 'histories.html', context=context)
 
         return response
+
+
+
+
+
+class TaskDetailView(TaskMixin, View):
+    template_name = 'task_details.html'
