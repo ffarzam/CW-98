@@ -10,7 +10,7 @@ class TodoMixin:
     def dispatch(self, request, *args, **kwargs):
         todo = Todo.objects.get(id=kwargs['pk'])
         if not todo.user == request.user:
-            raise PermissionDenied
+            return redirect("permissiondenied")
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, pk):
