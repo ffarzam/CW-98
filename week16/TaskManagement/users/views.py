@@ -56,3 +56,8 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("home")
+
+
+def permission_denied(request):
+    logout(request)
+    return redirect("login")
