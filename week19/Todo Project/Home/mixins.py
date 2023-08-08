@@ -22,7 +22,7 @@ class TodoMixin:
         todo = Todo.objects.get(id=pk)
         form = self.form_class(request.POST, instance=todo)
         if form.is_valid():
-            # todo.save()
+            form.save(commit=False)
             todo.user = todo.user
             todo.save()
             return redirect('thank_you')
