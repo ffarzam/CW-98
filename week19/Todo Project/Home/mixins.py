@@ -8,18 +8,22 @@ class TodoMixin:
     template_name = None
 
     def dispatch(self, request, *args, **kwargs):
-        todo = Todo.objects.get(id=kwargs['id'])
+        todo = Todo.objects.get(id=kwargs['pk'])
         if not todo.user == request.user:
-            raise PermissionDenied
+            return redirect("permissiondenied")
+        return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, id):
-        todo = Todo.objects.filter(id=id)
-        return render(request, self.template_name, {'todo': todo})
+    def get(self, request, pk):
+        todo = Todo.objects.get(id=pk)
+        form = self.form_class(instance=todo)
+        return render(request, self.template_name, {'todo': todo, "form":form})
 
-    def post(self, request, id):
-        todo = Todo.objects.get(id=id)
+    def post(self, request, pk):
+        todo = Todo.objects.get(id=pk)
         form = self.form_class(request.POST, instance=todo)
         if form.is_valid():
+            form.save(commit=False)
+            todo.user = todo.user
             todo.save()
             return redirect('thank_you')
         return render(request, self.template_name, {'todo': todo})
