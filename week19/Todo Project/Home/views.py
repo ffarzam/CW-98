@@ -23,3 +23,8 @@ def thank_you(request):
     return render(request, "Home/thank_you.html")
 
 
+def permission_denied(request):
+    return render(request, "Home/permissiondenied.html")
+
+
+
