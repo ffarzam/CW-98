@@ -19,3 +19,7 @@ class TodoDetailView(TodoMixin, View):
     template_name = 'Home/todo_detail.html'
 
 
+def thank_you(request):
+    return render(request, "Home/thank_you.html")
+
+
