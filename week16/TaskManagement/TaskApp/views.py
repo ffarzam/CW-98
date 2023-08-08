@@ -8,7 +8,7 @@ import mimetypes
 from django.http.response import HttpResponse, FileResponse
 import os
 from django.conf import settings
-from django.core.files.storage import FileSystemStorage
+from .forms import CreateTaskForm, CreateTagForm
 
 
 # Create your views here.
@@ -78,27 +78,18 @@ def tasks(request):
         status_list = []
         for i in Task.status_choice:
             status_list.append(i[0])
-
+        form = CreateTaskForm
         context = {"tasks": page_obj, "all_category": all_category, "all_tags": all_tags,
-                   "all_status": status_list}
+                   "all_status": status_list, 'form': form}
         return render(request, "tasks.html", context=context)
 
     elif request.method == "POST":
-        print(int(request.POST.get("category")))
-        category = Category.objects.get(id=int(request.POST.get("category")))
-        print(category)
+        form = CreateTaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.user = request.user
+            task.save()
 
-        task = Task.objects.create(title=request.POST.get("title"),
-                                   description=request.POST.get("content"),
-                                   due_date=request.POST.get("due_date"),
-                                   status=request.POST.get("status"),
-                                   category=category,
-                                   file=request.FILES.get('file'))
-        for i in dict(request.POST)['tag']:
-            tag = Tag.objects.get(id=int(i))
-            task.tag.add(tag)
-
-        task.save()
         ######################################################333
         if not request.COOKIES.get('history'):
 
@@ -129,13 +120,16 @@ def task_details(request, pk):
         all_tags = Tag.objects.all()
 
         task = get_object_or_404(Task, id=pk)
-
+        form = CreateTagForm
         context = {"task": task, "name": os.path.basename(f"{task.file}"), "all_category": all_category,
                    "all_tags": all_tags,
-                   "all_status": status_list}
+                   "all_status": status_list,
+                   "form": form}
         return render(request, "task_details.html", context=context)
 
     elif request.method == "POST":
+        task = get_object_or_404(Task, id=pk)
+
         if request.POST.get("title"):
             category = Category.objects.get(id=int(request.POST.get("category")))
 
@@ -182,33 +176,28 @@ def task_details(request, pk):
                 return response
             ######################################################333
 
-            # return redirect(request.build_absolute_uri())
-            # return redirect(request.path)
 
-        elif request.POST.get("tag"):
-            tag = Tag.objects.create(name=request.POST.get("tag"))
-            task = Task.objects.get(id=pk)
-            task.tag.add(tag)
-            task.save()
-            ######################################################333
-            if not request.COOKIES.get('history'):
+def create_tag(request, pk):
+    task = get_object_or_404(Task, id=pk)
+    form = CreateTagForm(request.POST)
+    print(form.is_valid())
+    if form.is_valid():
+        tag = form.save()
+        task.tag.add(tag)
+        task.save()
+        if not request.COOKIES.get('history'):
+            response = redirect("task_details", pk)
+            response.set_cookie('history', ['You create a Tag'])
+            return response
 
-                response = redirect(request.path)
-                response.set_cookie('history', ['You create a Tag'])
-                return response
-            else:
-                res = request.COOKIES.get('history')
-                print(res)
-                res=eval(res)
-                res.append('You create a Tag')
-
-                response = redirect(request.path)
-                response.set_cookie('history', res)
-                return response
-            ######################################################333
-
-            # return redirect(request.build_absolute_uri())
-            # return redirect(request.path)
+        else:
+            res = request.COOKIES.get('history')
+            print(res)
+            res = eval(res)
+            res.append('You create a Tag')
+            response = redirect("task_details", pk)
+            response.set_cookie('history', res)
+            return response
 
 
 def search(request):

@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import CustomUser
 
 
 # Create your models here.
@@ -36,6 +37,7 @@ class Task(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL,null=True)
     tag = models.ManyToManyField(Tag)
     file = models.FileField(upload_to='uploads/', null=True, blank=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
     def get_tags(self):
         task = Task.objects.get(id=self.id)
