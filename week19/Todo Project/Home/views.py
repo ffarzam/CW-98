@@ -6,7 +6,7 @@ from .mixins import TodoMixin
 
 class IndexView(View):
     def get(self, request):
-        return render(request, 'index.html')
+        return render(request, 'Home/index.html')
 
 
 class TodoListView(View):
