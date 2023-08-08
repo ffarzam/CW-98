@@ -11,7 +11,7 @@ class Todo(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        abstract = True
+        abstract = False
 
     def __str__(self):
         return self.title
