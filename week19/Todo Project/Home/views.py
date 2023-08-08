@@ -12,7 +12,7 @@ class IndexView(View):
 class TodoListView(View):
     def get(self, request):
         todos = Todo.objects.all()
-        return render(request, 'todo_list.html', {'todos': todos})
+        return render(request, 'Home/todo_list.html', {'todos': todos})
 
 
 class TodoDetailView(TodoMixin, View):
