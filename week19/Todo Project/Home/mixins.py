@@ -12,12 +12,12 @@ class TodoMixin:
         if not todo.user == request.user:
             raise PermissionDenied
 
-    def get(self, request, id):
+    def get(self, request, pk):
         todo = Todo.objects.filter(id=pk)
         return render(request, self.template_name, {'todo': todo})
 
     def post(self, request, pk):
-        todo = Todo.objects.get(id=id)
+        todo = Todo.objects.get(id=pk)
         form = self.form_class(request.POST, instance=todo)
         if form.is_valid():
             todo.save()
