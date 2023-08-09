@@ -24,6 +24,7 @@ class TaskMixin:
         if form.is_valid():
             form.save(commit=False)
             task.user = task.user
+            task.tag.set(form.cleaned_data["tag"])
             task.save()
-            return redirect('thank_you')
+            return redirect('home')
         return render(request, self.template_name, {'task': task})
