@@ -31,17 +31,17 @@
 
 </div>
 
-<article class="my-4 ">
-    <div class="container px-4 px-lg-5">
+<!--<article class="my-4 ">-->
+<!--    <div class="container px-4 px-lg-5">-->
 
-        <form action="{% url 'create_tag' task.id %}" name="tag_create" class=" row gy-4 gx-4 gx-lg-5 justify-content-center needs-validation" method="POST">
-            {% csrf_token %}
-            {{form.as_p}}
-            <div><button type="submit" class="button-85">Submit</button></div>
+<!--        <form action="{% url 'create_tag' task.id %}" name="tag_create" class=" row gy-4 gx-4 gx-lg-5 justify-content-center needs-validation" method="POST">-->
+<!--            {% csrf_token %}-->
+<!--            {{form.as_p}}-->
+<!--            <div><button type="submit" class="button-85">Submit</button></div>-->
 
-        </form>
-    </div>
-</article>
+<!--        </form>-->
+<!--    </div>-->
+<!--</article>-->
 
 <article class="my-4">
     <div class="container gy-4 px-4 px-lg-5">
@@ -53,60 +53,7 @@
             </div>
             <div class="row gy-4">
 
-                <div>
-                    <label for="formGroupExampleInput2">title</label>
-                    <input value="{{task.title}}" required type="text" class="form-control" id="formGroupExampleInput2" placeholder="title"
-                           name="title">
-                </div>
-                <div>
-                    <label for="formGroupExampleInput3">due_date</label>
-                    <input value="{{task.due_date|date:'Y-m-d'}}" required type="date" class="form-control" id="formGroupExampleInput3" placeholder="due_date"
-                           name="due_date">
-                </div>
-                <div>
-                <select class="form-select" name="category" required>
-                    <option value="{{task.category.id}}"> {{task.category}}</option>
-                    {% for category in all_category %}
-                    {% if category.id != task.category.id %}
-                    <option value="{{category.id}}">{{category.name}}</option>
-                    {%endif%}
-                    {% endfor %}
-                </select>
-                    </div>
-                <div>
-                <select class="form-select" name="status" required >
-                    <option selected>{{task.status}}</option>
-                    {% for status in all_status %}
-                    {% if task.status != status %}
-                    <option value="{{status}}">{{status}}</option>
-                    {%endif%}
-                    {% endfor %}
-                </select>
-                    </div>
-                <div class="dropdown col-sm-2">
-                        <button class="btn btn-warning bg-light dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
-                        Tags
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                            <input class="form-control ins" id="myInput2" type="text" placeholder="Search..">
-                            {% for tag in all_tags %}
-                            <li><span style="margin-left:20px">{{ tag.name }}</span>
-                                <input class="mx-2 px-2" type="checkbox" name="tag" value="{{ tag.id }}" aria-label="Checkbox for following text input" style="margin-left: 15px;"></li>
-                            {% endfor %}
-                        </ul>
-
-                    </div>
-
-                <div>
-
-                <textarea cols="50" name="content" id="content" style="font-family:sans-serif;font-size:1.2em;" required>{{task.description}}</textarea>
-                </div>
-                <div>
-                    <div class="form-group" >
-                        <label for="exampleFormControlFile1"></label>
-                        <input type="file" class="form-control-file" id="exampleFormControlFile1" name="file">
-                  </div>
-                </div>
+                {{form.as_p}}
             </div>
             <div>
                 <button type="submit" class="button-85">Submit</button>
