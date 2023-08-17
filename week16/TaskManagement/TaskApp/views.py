@@ -8,7 +8,7 @@ import mimetypes
 from django.http.response import HttpResponse, FileResponse
 import os
 from django.conf import settings
-from .forms import CreateTaskForm, CreateTagForm
+from .forms import CreateTaskForm, CreateTagForm, CreateCategoryForm
 from .mixins import TaskMixin
 from django.views import View
 from django.views.generic import ListView
@@ -102,9 +102,6 @@ class TaskListView(ListView):
     context_object_name = "tasks"
 
     def get_context_data(self, **kwargs):
-        print("1"*100)
-        print(kwargs)
-
         context = super().get_context_data(**kwargs)
         status_list = []
         for i in Task.status_choice:
@@ -265,36 +262,41 @@ def search_result(request):
             return render(request, 'search_result.html', {"searched": searched})
 
 
-def category(request):
-    if request.method == "GET":
-        all_categories = Category.objects.all()
-        paginator = Paginator(all_categories, 3)
-        page_number = request.GET.get("page")
-        page_obj = paginator.get_page(page_number)
-        context = {"categories": page_obj}
-        return render(request, "category.html", context=context)
+class CategoryListView(ListView):
+    model = Category
+    template_name = "category.html"
+    paginate_by = 3
+    context_object_name = "categories"
 
-    elif request.method == "POST":
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = CreateCategoryForm
 
-        cat = Category.objects.create(name=request.POST.get("cat"),
-                                      description=request.POST.get("description"),
-                                      image=request.FILES.get('file'))
-        ######################################################333
-        if not request.COOKIES.get('history'):
+        return context
 
-            response = redirect(request.path)
-            response.set_cookie('history', ['You create a category'])
-            return response
-        else:
-            res = request.COOKIES.get('history')
-            print(res)
-            res = eval(res)
-            res.append('You create a category')
+    def post(self, request):
+        form = CreateCategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
 
-            response = redirect(request.path)
-            response.set_cookie('history', res)
-            return response
-        ######################################################333
+        return redirect(request.path)
+
+
+# def category(request):
+#     if request.method == "GET":
+#         all_categories = Category.objects.all()
+#         paginator = Paginator(all_categories, 3)
+#         page_number = request.GET.get("page")
+#         page_obj = paginator.get_page(page_number)
+#         context = {"categories": page_obj}
+#         return render(request, "category.html", context=context)
+#
+#     elif request.method == "POST":
+#
+#         cat = Category.objects.create(name=request.POST.get("cat"),
+#                                       description=request.POST.get("description"),
+#                                       image=request.FILES.get('file'))
+#         return redirect(request.path)
 
 
 def category_task(request, pk):
@@ -453,9 +455,6 @@ def Histories(request):
         response = render(request, 'histories.html', context=context)
 
         return response
-
-
-
 
 
 class TaskDetailView(TaskMixin, View):
