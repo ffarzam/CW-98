@@ -1,5 +1,5 @@
 from django import forms
-from .models import Task, Tag
+from .models import Task, Tag, Category
 
 
 class CreateTaskForm(forms.ModelForm):
@@ -14,6 +14,17 @@ class CreateTaskForm(forms.ModelForm):
                    "category": forms.Select(attrs={'class': 'form-control'}),
                    "tag": forms.SelectMultiple(attrs={'class': 'form-control'}),
                    "file": forms.FileInput(attrs={'class': 'form-control'}), }
+
+
+class CreateCategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = "__all__"
+
+        widgets = {
+                   'name': forms.TextInput(attrs={'class': 'form-control'}),
+                   'description': forms.Textarea(attrs={'class': 'form-control'}),
+                   "image": forms.FileInput(attrs={'class': 'form-control'}), }
 
 
 class CreateTagForm(forms.ModelForm):
