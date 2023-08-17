@@ -11,7 +11,7 @@ from django.conf import settings
 from .forms import CreateTaskForm, CreateTagForm, CreateCategoryForm
 from .mixins import TaskMixin
 from django.views import View
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 
 # Create your views here.
@@ -149,71 +149,76 @@ class TaskListView(ListView):
         return redirect(request.path)
 
 
-def task_details(request, pk):
-    if request.method == "GET":
-        status_list = []
-        for i in Task.status_choice:
-            status_list.append(i[0])
+class TaskDetailsView(DetailView):
+    template_name = 'task_details.html'
+    model = Task
+    context_object_name = "task"
+    form_class = CreateTaskForm
 
-        all_category = Category.objects.all()
-        all_tags = Tag.objects.all()
+    def dispatch(self, request, *args, **kwargs):
+        self.task = self.model.objects.get(id=kwargs['pk'])
+        if not self.task.user == request.user:
+            return redirect("permissiondenied")
+        return super().dispatch(request, *args, **kwargs)
 
-        task = get_object_or_404(Task, id=pk)
-        form = CreateTagForm
-        context = {"task": task, "name": os.path.basename(f"{task.file}"), "all_category": all_category,
-                   "all_tags": all_tags,
-                   "all_status": status_list,
-                   "form": form}
-        return render(request, "task_details.html", context=context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = self.form_class
+        return context
 
-    elif request.method == "POST":
-        task = get_object_or_404(Task, id=pk)
+    def post(self, request, pk):
+        task = self.task
+        form = self.form_class(request.POST, instance=task)
+        if form.is_valid():
+            form.save(commit=False)
+            task.user = task.user
+            task.tag.set(form.cleaned_data["tag"])
+            task.save()
+            return redirect(request.path)
 
-        if request.POST.get("title"):
-            category = Category.objects.get(id=int(request.POST.get("category")))
-
-            task = Task.objects.filter(id=pk).update(title=request.POST.get("title"),
-                                                     description=request.POST.get("content"),
-                                                     due_date=request.POST.get("due_date"),
-                                                     status=request.POST.get("status"),
-                                                     category=category,
-                                                     )
-            if request.FILES.get('file'):
-                # file_name = file.name
-                # f = FileSystemStorage(location=settings.MEDIA_ROOT/"uploads/")
-                # print(f)
-                # main_file = f.save(file_name, file)
-                # file_url = f.url(main_file)
-                # print(file_url)
-
-                task = task.get()
-                task.file = request.FILES.get('file')
-                task.save()
-
-            task = Task.objects.get(id=pk)
-
-            if dict(request.POST).get('tag'):
-                task.tag.set([])
-                for i in dict(request.POST)['tag']:
-                    tag = Tag.objects.get(id=int(i))
-                    task.tag.add(tag)
-                task.save()
-            ######################################################333
-            if not request.COOKIES.get('history'):
-
-                response = redirect(request.path)
-                response.set_cookie('history', ['You update a Task'])
-                return response
-            else:
-                res = request.COOKIES.get('history')
-                print(res)
-                res = eval(res)
-                res.append('You update a Task')
-
-                response = redirect(request.path)
-                response.set_cookie('history', res)
-                return response
-            ######################################################333
+# def task_details(request, pk):
+#     if request.method == "GET":
+#         status_list = []
+#         for i in Task.status_choice:
+#             status_list.append(i[0])
+#
+#         all_category = Category.objects.all()
+#         all_tags = Tag.objects.all()
+#
+#         task = get_object_or_404(Task, id=pk)
+#         form = CreateTagForm
+#         context = {"task": task, "name": os.path.basename(f"{task.file}"), "all_category": all_category,
+#                    "all_tags": all_tags,
+#                    "all_status": status_list,
+#                    "form": form}
+#         return render(request, "task_details.html", context=context)
+#
+#     elif request.method == "POST":
+#         task = get_object_or_404(Task, id=pk)
+#
+#         if request.POST.get("title"):
+#             category = Category.objects.get(id=int(request.POST.get("category")))
+#
+#             task = Task.objects.filter(id=pk).update(title=request.POST.get("title"),
+#                                                      description=request.POST.get("content"),
+#                                                      due_date=request.POST.get("due_date"),
+#                                                      status=request.POST.get("status"),
+#                                                      category=category,
+#                                                      )
+#             if request.FILES.get('file'):
+#                 task = task.get()
+#                 task.file = request.FILES.get('file')
+#                 task.save()
+#
+#             task = Task.objects.get(id=pk)
+#
+#             if dict(request.POST).get('tag'):
+#                 task.tag.set([])
+#                 for i in dict(request.POST)['tag']:
+#                     tag = Tag.objects.get(id=int(i))
+#                     task.tag.add(tag)
+#                 task.save()
+#                 return redirect(request.path)
 
 
 def create_tag(request, pk):
@@ -271,7 +276,6 @@ class CategoryListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["form"] = CreateCategoryForm
-
         return context
 
     def post(self, request):
@@ -457,5 +461,5 @@ def Histories(request):
         return response
 
 
-class TaskDetailView(TaskMixin, View):
-    template_name = 'task_details.html'
+# class TaskDetailView(TaskMixin, View):
+#     template_name = 'task_details.html'
