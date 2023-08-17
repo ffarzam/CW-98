@@ -11,6 +11,7 @@ from django.conf import settings
 from .forms import CreateTaskForm, CreateTagForm
 from .mixins import TaskMixin
 from django.views import View
+from django.views.generic import ListView
 
 
 # Create your views here.
@@ -50,10 +51,75 @@ def task_filter(sorting_method, filter_method=None):
     return all_tasks
 
 
-def tasks(request):
-    if request.method == "GET":
+# def tasks(request):
+#     if request.method == "GET":
+#         all_category = Category.objects.all()
+#         all_tags = Tag.objects.all()
+#
+#         filter_method = request.GET.get('gridRadios')
+#         sorting_method = request.GET.get('select')
+#
+#         if filter_method == "all":
+#             all_tasks = task_filter(sorting_method, filter_method)
+#
+#         elif filter_method == "done":
+#             all_tasks = task_filter(sorting_method, filter_method)
+#
+#         elif filter_method == "doing":
+#             all_tasks = task_filter(sorting_method, filter_method)
+#
+#         elif filter_method == "todo":
+#             all_tasks = task_filter(sorting_method, filter_method)
+#
+#         else:
+#             all_tasks = task_filter(sorting_method)
+#
+#         paginator = Paginator(all_tasks, 3)
+#         page_number = request.GET.get("page")
+#         page_obj = paginator.get_page(page_number)
+#
+#         status_list = []
+#         for i in Task.status_choice:
+#             status_list.append(i[0])
+#         form = CreateTaskForm
+#         context = {"tasks": page_obj, "all_category": all_category, "all_tags": all_tags,
+#                    "all_status": status_list, 'form': form}
+#         return render(request, "tasks.html", context=context)
+#
+#     elif request.method == "POST":
+#         form = CreateTaskForm(request.POST)
+#         if form.is_valid():
+#             task = form.save(commit=False)
+#             task.user = request.user
+#             task.save()
+#         return redirect(request.path)
+
+
+class TaskListView(ListView):
+    model = Task
+    template_name = "tasks.html"
+    paginate_by = 3
+    context_object_name = "tasks"
+
+    def get_context_data(self, **kwargs):
+        print("1"*100)
+        print(kwargs)
+
+        context = super().get_context_data(**kwargs)
+        status_list = []
+        for i in Task.status_choice:
+            status_list.append(i[0])
+
         all_category = Category.objects.all()
         all_tags = Tag.objects.all()
+        context["all_category"] = all_category
+        context["all_tags"] = all_tags
+        context["form"] = CreateTaskForm
+        context["status_list"] = status_list
+        context["tasks"] = kwargs["object_list"]
+        return context
+
+    def get(self, request, *args, **kwargs):
 
         filter_method = request.GET.get('gridRadios')
         sorting_method = request.GET.get('select')
@@ -73,43 +139,17 @@ def tasks(request):
         else:
             all_tasks = task_filter(sorting_method)
 
-        paginator = Paginator(all_tasks, 3)
-        page_number = request.GET.get("page")
-        page_obj = paginator.get_page(page_number)
+        context = self.get_context_data(object_list=all_tasks)
 
-        status_list = []
-        for i in Task.status_choice:
-            status_list.append(i[0])
-        form = CreateTaskForm
-        context = {"tasks": page_obj, "all_category": all_category, "all_tags": all_tags,
-                   "all_status": status_list, 'form': form}
-        return render(request, "tasks.html", context=context)
+        return render(request, self.template_name, context=context)
 
-    elif request.method == "POST":
+    def post(self, request):
         form = CreateTaskForm(request.POST)
         if form.is_valid():
             task = form.save(commit=False)
             task.user = request.user
             task.save()
-
-        ######################################################333
-        if not request.COOKIES.get('history'):
-
-            response = redirect(request.path)
-            response.set_cookie('history', ['You create a Task'])
-            return response
-        else:
-            res = request.COOKIES.get('history')
-            print(res)
-            res = eval(res)
-            res.append('You create a Task')
-
-            response = redirect(request.path)
-            response.set_cookie('history', res)
-            return response
-        ######################################################333
-        # return redirect(request.build_absolute_uri())
-        # return redirect(request.path)
+        return redirect(request.path)
 
 
 def task_details(request, pk):
