@@ -37,6 +37,10 @@ class Task(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL,null=True)
     tag = models.ManyToManyField(Tag)
     file = models.FileField(upload_to='uploads/', null=True, blank=True)
+    created = models.DateField(auto_now_add=True, editable=False)
+    updated = models.DateField(auto_now=True, editable=False)
+    is_active = models.BooleanField(default=True)
+
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
     def get_tags(self):
