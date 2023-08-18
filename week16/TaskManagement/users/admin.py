@@ -40,7 +40,7 @@ admin.site.register(Session, SessionAdmin)
 
 @admin.register(CustomUser)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ["username", "email", "task_count", "is_great_user"]
+    list_display = ["username", "email", "task_count", "is_great_user", 'img_preview']
     ordering = ["username", "email"]
     list_filter = ["username", "email", IsGreatUserFilter,]
 
