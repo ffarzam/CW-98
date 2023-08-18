@@ -10,6 +10,6 @@ admin.site.register(Tag)
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ["title", "is_active", ]
+    list_display = ["title", "is_active","created","updated" ]
     readonly_fields = ["is_active"]
 
