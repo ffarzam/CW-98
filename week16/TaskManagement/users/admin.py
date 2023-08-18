@@ -9,6 +9,23 @@ from django.db.models import Count
 # Register your models here.
 
 # admin.site.register(CustomUser)
+class IsGreatUserFilter(admin.SimpleListFilter):
+    title = 'is_great_user'
+    parameter_name = 'is_great_user'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('Yes', 'Yes'),
+            ('No', 'No'),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value == 'Yes':
+            return queryset.filter(task_count__gt=10)
+        elif value == 'No':
+            return queryset.exclude(task_count__gt=10)
+        return queryset
 
 
 class SessionAdmin(admin.ModelAdmin):
@@ -23,8 +40,9 @@ admin.site.register(Session, SessionAdmin)
 
 @admin.register(CustomUser)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ["username", "email", "task_count"]
-    # ordering = ["username", "email",]
+    list_display = ["username", "email", "task_count", "is_great_user"]
+    ordering = ["username", "email"]
+    list_filter = ["username", "email", IsGreatUserFilter,]
 
     @admin.display(ordering='task_count')
     def task_count(self, user):
@@ -43,5 +61,10 @@ class UserAdmin(admin.ModelAdmin):
             task_count=Count('task__user')
         )
 
+    def is_great_user(self, obj):
+        if obj.task_count > 10:
+            return True
+        else:
+            return False
 
 
