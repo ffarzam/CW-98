@@ -24,9 +24,9 @@ admin.site.register(Session, SessionAdmin)
 @admin.register(CustomUser)
 class UserAdmin(admin.ModelAdmin):
     list_display = ["username", "email", "task_count"]
-    # ordering = ["number_of_tasks"]
+    # ordering = ["username", "email",]
 
-    # @admin.display(ordering='task_count')
+    @admin.display(ordering='task_count')
     def task_count(self, user):
         url = (reverse('admin:TaskApp_task_changelist')
                + '?'
