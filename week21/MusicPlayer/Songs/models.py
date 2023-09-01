@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import Band
+from Accounts.models import Band
 
 
 # Create your models here.
