@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from .manager import CustomManager
+from Songs.models import Song
 
 
 class Base(AbstractBaseUser, PermissionsMixin):
@@ -39,6 +40,7 @@ class User(Base):
 class Artist(Base):
     bio = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='artists/% Y/% m/% d/', null=True, blank=True)
+    song = models.ManyToManyField(Song)
 
 
 class Band(models.Model):
