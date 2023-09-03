@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin,AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from .manager import CustomManager
@@ -17,7 +17,7 @@ class Base(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
 
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["username"]
 
     objects = CustomManager()
 
@@ -26,24 +26,25 @@ class Base(AbstractBaseUser, PermissionsMixin):
 
 
 class User(Base):
-    Normal = "Normal"
-    VIP = "VIP"
+    Free = "F"
+    VIP = "V"
     CHOICES = (
-        (Normal, 'Normal'),
+        (Free, 'Free'),
         (VIP, 'VIP'),
     )
-    user_type = models.CharField(max_length=6, choices=CHOICES, default="Normal")
+    user_type = models.CharField(max_length=6, choices=CHOICES, default=Free)
     image = models.ImageField(upload_to='users/% Y/% m/% d/', null=True, blank=True)
     vip_until = models.DateField(null=True, blank=True)
+
+
+class Band(models.Model):
+    name = models.CharField(max_length=50)
+    start_band = models.DateField(auto_now_add=True, editable=False)
+    end_band = models.DateField(null=True, blank=True)
 
 
 class Artist(Base):
     bio = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='artists/% Y/% m/% d/', null=True, blank=True)
     song = models.ManyToManyField(Song)
-
-
-class Band(models.Model):
-    name = models.CharField(max_length=50)
-    start_band = models.DateField(auto_now_add=True, editable=False)
-    end_band = models.DateField(null=True, blank=True, editable=True)
+    band = models.ForeignKey(Band, on_delete=models.PROTECT, null=True, blank=True)

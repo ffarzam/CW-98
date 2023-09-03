@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %} Tasky {%endblock%}
+{% block content %}
+<header class="d-flex flex-column justify-content-center h-100 py-5">
+    <div class="container px-5">
+        <div class="row gx-5 justify-content-center">
+            <div class="col-lg-6">
+                <div class="text-center my-5">
+                    <h2 class="display-3 fw-bolder text-white mb-2">WELCOME TO TASKY</h2>
+                    {% if request.session.login_session %}
+                    <h3 class=" text-white mb-2" >Wellcome to your dashboard {{request.session.login_session}}</h3>
+                    {% elif request.session.register_session %}
+                    <h3 class=" text-white mb-2" >Happy to register in our website {{request.session.register_session}}</h3>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</header>
+
+<div style="margin-top: 5px;padding-left:150px;padding-right:150px;margin-bottom: 50px; ">
+    <div class="d-flex flex-wrap row-gap-4 column-gap-4 justify-content-center ">
+        {%for task in tasks %}
+            <a  href="{% url 'task_details' task.id %}">
+                <button class="button-85" role="button">
+                    {{task.title}}
+                </button>
+            </a>
+        {%endfor%}
+    </div>
+</div>
+
+
+
+{%endblock%}
