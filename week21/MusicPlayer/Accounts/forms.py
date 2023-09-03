@@ -45,3 +45,19 @@ class RegisterForm(forms.ModelForm):
                 raise forms.ValidationError("passwords don't match")
 
             return cleaned_data
+
+
+class LoginForm(forms.Form):
+    username_email = forms.CharField(label='Username or Email',
+                                     widget=forms.TextInput(attrs={'class': 'form-control text-light bg-dark',
+                                                                   'placeholder': 'Enter Your Username or Email Here'}))
+    password = forms.CharField(widget=forms.PasswordInput(
+        attrs={'class': 'form-control text-light bg-dark', 'placeholder': 'Enter Your Password Here'}))
+
+    remember_me = forms.BooleanField(required=False, widget=forms.CheckboxInput(
+        attrs={"class": "form-check-input", "type": "checkbox"}))
+
+    def __init__(self, request=None, *args, **kwargs):
+        self.request = request
+        self.user_cache = None
+        super().__init__(*args, **kwargs)
