@@ -1,5 +1,18 @@
 from django import forms
 from .models import Base
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+
+
+class BaseCreationForm(UserCreationForm):
+    class Meta:
+        model = Base
+        fields = ('username', 'email', 'name', "password1", "password2")
+
+
+class BaseChangeForm(UserChangeForm):
+    class Meta:
+        model = Base
+        fields = ('username', 'name', 'email')
 
 
 class RegisterForm(forms.ModelForm):

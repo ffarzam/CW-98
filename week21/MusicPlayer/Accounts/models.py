@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin,AbstractUser
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from .manager import CustomManager
@@ -22,7 +22,28 @@ class Base(AbstractBaseUser, PermissionsMixin):
     objects = CustomManager()
 
     def __str__(self):
-        return self.username
+        return self.email
+
+    @property
+    def is_permitted(self):
+        qs = Base.objects.filter(id=self.id)
+
+        if qs.exists():
+
+            base = qs.get()
+            usn = base.username
+            user = User.objects.filter(username=usn)
+
+            artist = Artist.objects.filter(username=usn)
+
+            if user.exists():
+                user = user.get()
+                if user.user_type == "V":
+                    return True
+            elif artist.exists():
+                return True
+            else:
+                return True
 
 
 class User(Base):
@@ -46,5 +67,5 @@ class Band(models.Model):
 class Artist(Base):
     bio = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='artists/% Y/% m/% d/', null=True, blank=True)
-    song = models.ManyToManyField(Song)
     band = models.ForeignKey(Band, on_delete=models.PROTECT, null=True, blank=True)
+    song = models.ManyToManyField(Song, blank=True)
