@@ -1,17 +1,17 @@
 {% extends "base.html" %}
-{% block title %} Tasky {%endblock%}
+{% load static %}
+{% block title %} Musify {%endblock%}
 {% block content %}
+{% load custom_tags %}
 <header class="d-flex flex-column justify-content-center h-100 py-5">
     <div class="container px-5">
         <div class="row gx-5 justify-content-center">
             <div class="col-lg-6">
                 <div class="text-center my-5">
-                    <h2 class="display-3 fw-bolder text-white mb-2">WELCOME TO TASKY</h2>
-                    {% if request.session.login_session %}
-                    <h3 class=" text-white mb-2" >Wellcome to your dashboard {{request.session.login_session}}</h3>
-                    {% elif request.session.register_session %}
-                    <h3 class=" text-white mb-2" >Happy to register in our website {{request.session.register_session}}</h3>
-                    {% endif %}
+                    <h2 class="display-3 fw-bolder text-white mb-2">WELCOME TO Musify</h2>
+
+                    <h3 class=" text-white mb-2">Listen then Feel</h3>
+
                 </div>
             </div>
         </div>
@@ -19,18 +19,109 @@
 
 </header>
 
-<div style="margin-top: 5px;padding-left:150px;padding-right:150px;margin-bottom: 50px; ">
-    <div class="d-flex flex-wrap row-gap-4 column-gap-4 justify-content-center ">
-        {%for task in tasks %}
-            <a  href="{% url 'task_details' task.id %}">
-                <button class="button-85" role="button">
-                    {{task.title}}
-                </button>
-            </a>
+<div class="container">
+        <form action="{% url 'home' %}" method="GET" class="mb-5 d-flex justify-content-center" style="max-width:500px">
+
+            <input class="form-control border border-3 border-top-0 border-start-0 border-end-0" type="search" placeholder="Search"
+            aria-label="Search" name="search" style=" outline: none;">
+          <button class="ms-3 btn btn-primary" type="submit">Search </button>
+        </form>
+
+
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-3 infinite-container">
+        {%for song in songs %}
+
+            <div class="card h-100 infinite-item">
+                <a href="{% url 'song_details' song.id %}"><img src="{{song.cover_photo.url}}" class="img-fluid rounded-start" alt="..."></a>
+                <div class="card-body">
+                    <h5 class="card-title">{{song.title}}</h5>
+                    <p class="card-text">{%for artist in song.song_artists %}{{artist.name}}{% if not forloop.last %},{%endif%}{%endfor%}</p>
+                    <p class="card-text">{%for genre in song.song_genres %}{{genre}}{% if not forloop.last %},{%endif%}{%endfor%}</p>
+                    <div class="mt-2">
+                        <audio controls style="width: 100%;">
+                            <source src="{{song.audio_file.url}}" type="audio/mpeg">
+                            Your browser does not support the audio tag.
+                        </audio>
+                    </div>
+                    <div>
+                        {% if request.user.is_authenticated and request.user.is_permitted %}
+                                <form class="like-form" action="{% url 'like' song.id %}" method="POST">
+                                    <div class="d-flex justify-content-flex-end align-items-center">
+                                    <div class="me-3">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="like_button" {% if song|is_liked:request.user.id %} value="unlike" {%else%} value="like"{% endif %}">
+
+                                    <button type="submit" class="submit_btn btn btn-info">
+                                        {% if song|is_liked:request.user.id %}
+                                        Unlike
+                                        {%else%}
+                                        Like
+                                        {% endif %}
+                                    </button>
+                                    </div>
+                                    <div>
+                                        <span>Likes: </span><strong class="text-secondary like_count">{{ song.number_of_likes }}</strong>
+                                    </div>
+                                        </div>
+                                </form>
+
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
         {%endfor%}
     </div>
-</div>
+        <div class="loading" style="display: none;">
+        Loading...
+        </div>
+
+          {% if page_obj.has_next %}
+            <a class="infinite-more-link" href="?{% if request.GET.search %}search={{request.GET.search}}{% endif %}&page={{  page_obj.next_page_number }}">More</a>
+          {% endif %}
+
+    </div>
+
+  <script>
+    var infinite = new Waypoint.Infinite({
+      element: $('.infinite-container')[0],
+      onBeforePageLoad: function () {
+        $('.loading').show();
+      },
+      onAfterPageLoad: function ($items) {
+        $('.loading').hide();
+      }
+    });
 
 
+        $('body').on('submit', '.like-form', function(event){
+            event.preventDefault();
+            var self = $(this)
+            var url = self.attr('action')
+            var like_button = self.find("[name='like_button']")
+            var like_button_value = like_button.val()
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: self.serialize(),
+                success: function(response){
+                    var btn = self.find('.submit_btn')
+                    self.find('.like_count').text(response.count)
+                    if (like_button_value == 'like'){
+                           like_button.val('unlike')
+                           btn.text('Unlike')
+                    }
+                    else{
+                        like_button.val('like')
+                        btn.text('Like')
+                    }
+                },
+                error: function(response){
+                    console.log('error', response)
+                }
+            })
+        });
+  </script>
 
 {%endblock%}
