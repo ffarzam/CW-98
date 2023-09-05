@@ -1,12 +1,22 @@
-from django.shortcuts import render
+from django.db.models import Q
 from Songs.models import Song
+from django.views.generic.list import ListView
 
 
 # Create your views here.
 
-def home(request):
-    if request.method == "GET":
-        all_songs = Song.objects.all()
 
-        context = {"tasks": all_songs}
-        return render(request, "home/home.html", context=context)
+class Home(ListView):
+    model = Song
+    context_object_name = 'songs'
+    template_name = "home/home.html"
+    paginate_by = 3
+    ordering = ['-upload_date']
+
+    def get_queryset(self):
+        search = self.request.GET.get("search")
+        if search:
+            queryset = self.model.objects.filter(Q(title__icontains=search))
+        else:
+            queryset = self.model.objects.all()
+        return queryset
