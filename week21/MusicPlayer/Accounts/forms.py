@@ -1,5 +1,5 @@
 from django import forms
-from .models import Base
+from .models import Base, User, Artist
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 
@@ -12,7 +12,40 @@ class BaseCreationForm(UserCreationForm):
 class BaseChangeForm(UserChangeForm):
     class Meta:
         model = Base
-        fields = ('username', 'name', 'email')
+        fields = ['username', 'name', 'email', ]
+
+
+class BaseUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Base
+        fields = ['username', 'name', 'email', ]
+        widgets = {"username": forms.TextInput(attrs={'class': 'form-control'}),
+                   "name": forms.TextInput(attrs={'class': 'form-control'}),
+                   "email": forms.EmailInput(attrs={'class': 'form-control'}),
+                   }
+
+
+class MyUserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'name', 'email', 'image']
+        widgets = {"username": forms.TextInput(attrs={'class': 'form-control'}),
+                   "name": forms.TextInput(attrs={'class': 'form-control'}),
+                   "email": forms.EmailInput(attrs={'class': 'form-control'}),
+                   "image": forms.FileInput(
+                       attrs={'class': 'form-control', "accept": "image/*"})}
+
+
+class ArtistUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Artist
+        fields = ['username', 'name', 'email', 'bio', 'image']
+        widgets = {"username": forms.TextInput(attrs={'class': 'form-control'}),
+                   "name": forms.TextInput(attrs={'class': 'form-control'}),
+                   "bio": forms.Textarea(attrs={'class': 'form-control'}),
+                   "email": forms.EmailInput(attrs={'class': 'form-control'}),
+                   "image": forms.FileInput(
+                       attrs={'class': 'form-control', "accept": "image/*"})}
 
 
 class RegisterForm(forms.ModelForm):
