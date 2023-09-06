@@ -1,8 +1,10 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, AbstractUser
+from django.db.models import F
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from .manager import CustomManager
 from Songs.models import Song
+from Interactions.models import Like, Playlist
 
 
 class Base(AbstractBaseUser, PermissionsMixin):
@@ -24,18 +26,52 @@ class Base(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+    def number_of_playlist(self):
+        return len(Playlist.objects.select_related("user").filter(user=self))
+
+    def get_artist(self):
+        qs = Base.objects.filter(id=self.id)
+        if qs.exists():
+            base = qs.get()
+            usn = base.username
+            artist = Artist.objects.filter(username=usn)
+            if artist.exists():
+                artist = artist.get()
+                return artist
+            else:
+                return None
+
+    def get_user(self):
+        qs = Base.objects.filter(id=self.id)
+        if qs.exists():
+            base = qs.get()
+            usn = base.username
+            user = User.objects.filter(username=usn)
+            if user.exists():
+                user = user.get()
+                return user
+            else:
+                return None
+
+    def number_of_songs(self):
+        artist = self.get_artist()
+        return len(artist.song.all())
+
+        # return len(Playlist.objects.select_related("user").prefetch_related('song').filter(user=self).annotate(
+        #     song_id=F("song__id")).filter(song_id__isnull=False).values("song_id").distinct())
+
+    def number_of_likes(self):
+        return len(Like.objects.select_related("user").filter(user=self))
+
     @property
     def is_permitted(self):
         qs = Base.objects.filter(id=self.id)
 
         if qs.exists():
-
             base = qs.get()
             usn = base.username
             user = User.objects.filter(username=usn)
-
             artist = Artist.objects.filter(username=usn)
-
             if user.exists():
                 user = user.get()
                 if user.user_type == "V":
