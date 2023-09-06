@@ -25,9 +25,13 @@ class Comment(models.Model):
 
 class Playlist(models.Model):
     title = models.CharField(max_length=25)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     user = models.ForeignKey("Accounts.Base", on_delete=models.CASCADE)
     song = models.ManyToManyField("Songs.Song", blank=True)
+    created_at = models.DateField(auto_now_add=True, editable=False)
+
+    def playlist_songs(self):
+        return self.song.all()
 
     def __str__(self):
         return self.title
