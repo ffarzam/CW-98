@@ -17,7 +17,7 @@
                     <p class="card-text">{%for artist in song.song_artists %}{{artist.name}}{% if not forloop.last %},{%endif%}{%endfor%}</p>
                     <p class="card-text">{%for genre in song.song_genres %}{{genre}}{% if not forloop.last %},{%endif%}{%endfor%}</p>
                     <div class="mt-2">
-                        <audio controls style="width: 80%;">
+                        <audio onplay="cookie_set(this.id)" id="{{song.id}}" controls style="width: 80%;">
                             <source src="{{song.audio_file.url}}" type="audio/mpeg">
                             Your browser does not support the audio tag.
                         </audio>
@@ -45,15 +45,15 @@
 
                         <div class="mt-4 d-flex ms-2">
 
-                                {% if playlists %}
+
                             <div class="d-flex justify-content-between align-items-end">
                             <div class="">
-                                <form class="playlist_create_form" action="{% url 'playlist' %}" method="GET">
-                                    {% csrf_token %}
+                                <form class="playlist_create_form" action="{% url 'create_playlist' %}" method="GET">
+
                                 <div class="d-flex justify-content-center align-items-end">
                                     <div>
                                     <label>Enter a name for your playlist: </label>
-                                    <input class="form-control" type="text" name="playlist_name" id="playlist_name">
+                                    <input class="form-control" type="text" name="playlist_title" id="playlist_title">
                                     </div>
                                     <div class="ms-2">
                                         <button type="submit" class="btn btn-primary" id="create_playlist">Create Playlist</button>
@@ -62,16 +62,17 @@
                                 </form>
                             </div>
                             <div class=" ms-2">
-                                <form class="add_to_playlist-form" action="{% url 'playlist' %}" method="POST">
+
+                                <form class="add_to_playlist_form" action="{% url 'add_to_playlist' song.id %}" method="POST" {% if not playlists %} style="display:none" {%endif%}>
                                     {% csrf_token %}
-                                    <input type="hidden" name="song_id" value="{{song.id}}">
+                                    <input class="playlist_id_input" type="hidden" name="playlist_id_input" value="">
                                     <div class="d-flex justify-content-center align-items-end">
                                 <div>
 
                                     <select class="form-select" id="dselect-form" data-live-search="true">
 
                                         {% for playlist in playlists %}
-                                            <option value="{{playlist.id}}">{{playlist.title}}</option>
+                                            <option name="playlist_id" value="{{playlist.id}}">{{playlist.title}}</option>
                                         {% endfor %}
                                     </select>
 
@@ -84,23 +85,6 @@
                             </div>
                                 </div>
 
-                                {%else%}
-
-                                <form class="playlist_create_form" action="{% url 'playlist' %}" method="GET">
-                                    {% csrf_token %}
-                                <div class="d-flex justify-content-center align-items-end">
-                                    <div>
-
-                                    <label>Enter a name for your playlist: </label>
-                                    <input class="form-control" type="text" name="playlist_name" id="playlist_name">
-
-                                </div>
-                                <div class="ms-2">
-                                    <button type="submit" class="btn btn-primary" id="create_playlist">Create Playlist</button>
-                                </div>
-                                </div>
-                                </form>
-                                {% endif %}
                         </div>
                         {% endif %}
                     </div>
@@ -110,7 +94,7 @@
 
                 </div>
                 {% if request.user.is_authenticated and request.user.is_permitted %}
-                <div class="my-5 col-8" style="height:250px">
+                <div class="my-5 col-8" >
                     <form class="create_comment_form" action="{% url 'comments' %}" method="POST">
                         {% csrf_token %}
                         <input type="hidden" class="comment_input" name="song_id" value="{{song.id}}">
@@ -168,10 +152,13 @@
 
 </script>
 <script>
-    const config = {
-    search: true
-    };
-    dselect(document.querySelector('#dselect-form'), config);
+    function mySelect() {
+        const config = {
+            search: true
+        };
+        dselect(document.querySelector('#dselect-form'), config);
+    }
+    mySelect()
 </script>
 <script>
     $('body').on('submit', '.like-form', function(event){
@@ -220,6 +207,63 @@
                     console.log('error', response)
                 }
             })
+        });
+  </script>
+
+<script>
+    $('.playlist_create_form').on('submit', function(event){
+            event.preventDefault();
+            var self = $(this)
+            var url = self.attr('action')
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: self.serialize(),
+                success: function(response){
+                self.find('#playlist_title').val('')
+                $('#dselect-form').append($('<option>', {
+                    value: response.id,
+                    text: response.title
+                })).val(response.id);
+                mySelect()
+                $('.add_to_playlist_form').fadeIn()
+
+                    console.log('success', response)
+                },
+                error: function(response){
+                    console.log('error', response)
+                }
+            })
+        });
+  </script>
+
+<script>
+    $('body').on('submit', '.add_to_playlist_form', function(event){
+            event.preventDefault();
+            var self = $(this)
+            var url = self.attr('action')
+            var playlist_id = self.find('.form-select')
+
+            var playlist_id_input = self.find("[name='playlist_id_input']")
+
+            playlist_id_input.val(playlist_id.val())
+
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: self.serialize(),
+                success: function(response){
+                self.find('#playlist_title').val('')
+
+                    console.log('success', response)
+                },
+                error: function(response){
+                    console.log('error', response)
+                }
+            })
+
+
         });
   </script>
 
