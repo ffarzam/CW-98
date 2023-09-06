@@ -1,0 +1,93 @@
+
+{% extends "base.html" %}
+{% block title %} Musify {%endblock%}
+{% block content %}
+{% load static %}
+{% load custom_tags %}
+
+<section class="h-100 gradient-custom-2">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-lg-12 col-xl-12">
+        <div class="card">
+          <div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
+            <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
+              {% if user.image %}
+              <img src="{{user.image.url}}"
+                alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
+                style="width: 150px; z-index: 1">
+              {%else%}
+              <img src="{% static '/images/default-profile-picture.jpg' %}"
+                alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
+                style="width: 150px; z-index: 1">
+              {%endif%}
+              <a href="{% url 'profile_edit' %}" style="z-index: 1 !important;"><button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
+                style="width: 150px; z-index: 1">
+                Edit Profile
+              </button></a>
+            </div>
+            <div class="ms-3" {% if request.user.get_user %} style="margin-top: 100px;" {% else %} style="margin-top: 130px;" {% endif %} >
+              <h5>{{user.name}}</h5>
+              <p>{{user.username}}</p>
+                {% if request.user.get_user %}
+                <p>{{request.user.get_user.get_user_type_display}} Accounts</p>
+                {% endif %}
+            </div>
+          </div>
+          <div class="p-4 text-black" style="background-color: #f8f9fa;">
+            <div class="d-flex justify-content-end text-center py-1">
+              <div>
+                <p class="mb-1 h5">{{user.number_of_likes}}</p>
+                <p class="small text-muted mb-0">Liked</p>
+              </div>
+              <div class="px-3">
+                <p class="mb-1 h5">{{user.number_of_playlist}}</p>
+                <a href="{% url 'playlist' %}"><p class="small text-muted mb-0">Playlists</p></a>
+              </div>
+              {% if request.user.get_artist %}
+              <div>
+                <p class="mb-1 h5">{{user.number_of_songs}}</p>
+                <a href="{% url 'upload_song' %}"><p class="small text-muted mb-0">Songs</p></a>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="row d-flex justify-content-center p-4 text-black">
+            <div class="mb-5">
+              <p class="lead fw-normal mb-1">About</p>
+              <div class="p-4" style="background-color: #f8f9fa;">
+
+                <p class="font-italic mb-1">Web Developer</p>
+                <p class="font-italic mb-1">Lives in Iran</p>
+                <p class="font-italic mb-1">{{user.email}}</p>
+
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <p class="lead fw-normal mb-0">{{playlist.title}} Playlist Songs</p>
+              <a href="{% url 'delete_playlist' playlist.id %}"><button class="btn btn-danger" type="button">Delete Playlist</button></a>
+
+            </div>
+            <div class="row g-5 d-flex justify-content-center ">
+
+                    <div class="col-8 mb-2 text-center">
+                           <form method="post">
+                               {% csrf_token %}
+                               <h3>Are you sure you want to delete "{{ object }}"?</h3>
+                               <input class="btn btn-danger" type="submit" value="Confirm">
+                           </form>
+                </div>
+
+
+
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{%endblock%}
