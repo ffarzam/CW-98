@@ -1,9 +1,12 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from Songs.models import Song
 from Accounts.models import Base, User, Artist
-from Accounts.forms import BaseUpdateForm, MyUserUpdateForm, ArtistUpdateForm
+from Accounts.forms import BaseUpdateForm, MyUserUpdateForm, ArtistUpdateForm, ChangePasswordForm
 from django.shortcuts import render, redirect
+from django.views import View
 from django.views.generic.list import ListView
 
 
@@ -85,3 +88,22 @@ def profile_edit(request):
     return render(request,
                   'home/profile_edit.html',
                   {'form': form})
+
+
+class ChangePassword(LoginRequiredMixin, View):
+    template_name = 'home/password_change.html'
+    form_class = ChangePasswordForm
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, instance=request.user)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.password = make_password(form.cleaned_data["password"])
+            user.save()
+            return redirect("home")
+        else:
+            return render(request, self.template_name, {'form': form})

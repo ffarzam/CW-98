@@ -107,3 +107,23 @@ class LoginForm(forms.Form):
         self.request = request
         self.user_cache = None
         super().__init__(*args, **kwargs)
+
+
+class ChangePasswordForm(forms.ModelForm):
+    confirm_password = forms.CharField(label="Confirm Password", widget=forms.PasswordInput(
+        attrs={'class': 'form-control', 'placeholder': 'Confirm Your Password Here'}))
+
+    class Meta:
+        model = Base
+        fields = ['password']
+        widgets = {"password": forms.PasswordInput(
+            attrs={'class': 'form-control', 'placeholder': 'Enter New Password Here'}),
+        }
+        labels = {"password": "New Password"}
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data["password"] != cleaned_data["confirm_password"]:
+            raise forms.ValidationError("passwords don't match")
+
+        return cleaned_data
