@@ -7,7 +7,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         backup_file = 'backup.json'
-        with open(f"backups/{backup_file}", "w") as f:
-            call_command('dumpdata', stdout=f)
+        with open(f"backups/{backup_file}", "r") as f:
+            call_command('loaddata', stdin=f)
 
         self.stdout.write(self.style.SUCCESS('Database backup was created successfully'))

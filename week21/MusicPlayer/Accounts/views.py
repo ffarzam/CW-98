@@ -6,6 +6,8 @@ from django.contrib.auth.hashers import make_password
 from .models import User, Artist
 from django.views.generic import View
 from django.contrib.auth.views import LoginView
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 # Create your views here.
@@ -28,13 +30,16 @@ def register(request):
                                             email=cd["email"],
                                             password=make_password(cd["password"])
                                             )
-
+            subject = "Welcome Message"
+            content = "Welcome to Our Website"
+            send_mail(subject, content,
+                      settings.DEFAULT_FROM_EMAIL, [obj.email])
             return redirect('home')
 
     if request.method == 'GET':
         form = RegisterForm()
 
-    return render(request, 'auth/register.html', {'form': form, "message": message})
+        return render(request, 'auth/register.html', {'form': form, "message": message})
 
 
 class Login(LoginView):
@@ -46,9 +51,9 @@ class Login(LoginView):
     def form_valid(self, form):
         remember = form.cleaned_data["remember_me"]
         if remember:
-            self.request.session.set_expiry(0)
-        else:
             self.request.session.set_expiry(None)
+        else:
+            self.request.session.set_expiry(0)
 
         user = AuthBackend().authenticate(
             self.request,
