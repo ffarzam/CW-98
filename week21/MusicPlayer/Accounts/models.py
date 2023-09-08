@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, AbstractUser
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, AbstractUser, User
 from django.db.models import F
 from django.utils.translation import gettext_lazy as _
 from django.db import models
@@ -27,7 +27,7 @@ class Base(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def number_of_playlist(self):
-        return len(Playlist.objects.select_related("user").filter(user=self))
+        return Playlist.objects.select_related("user").filter(user=self).count() # Check It
 
     def get_artist(self):
         qs = Base.objects.filter(id=self.id)
@@ -61,11 +61,11 @@ class Base(AbstractBaseUser, PermissionsMixin):
         #     song_id=F("song__id")).filter(song_id__isnull=False).values("song_id").distinct())
 
     def number_of_likes(self):
-        return len(Like.objects.select_related("user").filter(user=self))
+        return Like.objects.select_related("user").filter(user=self).count()
 
     @property
     def is_permitted(self):
-        qs = Base.objects.filter(id=self.id)
+        qs = Base.objects.filter(id=self.id)  #id VS pk
 
         if qs.exists():
             base = qs.get()
@@ -74,8 +74,7 @@ class Base(AbstractBaseUser, PermissionsMixin):
             artist = Artist.objects.filter(username=usn)
             if user.exists():
                 user = user.get()
-                if user.user_type == "V":
-                    return True
+                return user.user_type == "V"
             elif artist.exists():
                 return True
             else:
@@ -91,7 +90,7 @@ class User(Base):
     )
     user_type = models.CharField(max_length=6, choices=CHOICES, default=Free)
     image = models.ImageField(upload_to='users/% Y/% m/% d/', null=True, blank=True)
-    vip_until = models.DateField(null=True, blank=True)
+    vip_until = models.DateField(null=True, blank=True) #normal form database
 
 
 class Band(models.Model):

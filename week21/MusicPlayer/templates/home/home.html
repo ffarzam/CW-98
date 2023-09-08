@@ -38,7 +38,7 @@
                     <p class="card-text">{%for artist in song.song_artists %}{{artist.name}}{% if not forloop.last %},{%endif%}{%endfor%}</p>
                     <p class="card-text">{%for genre in song.song_genres %}{{genre}}{% if not forloop.last %},{%endif%}{%endfor%}</p>
                     <div class="mt-2">
-                        <audio onplay="cookie_set(this.id)" id="{{song.id}}" controls style="width: 100%;">
+                        <audio onplay="cookie_set(this.id); played_song(this.id)" id="{{song.id}}" controls style="width: 100%;">
                             <source src="{{song.audio_file.url}}" type="audio/mpeg">
                             Your browser does not support the audio tag.
                         </audio>
