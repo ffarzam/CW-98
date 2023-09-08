@@ -20,9 +20,9 @@
                 alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
                 style="width: 150px; z-index: 1">
               {%endif%}
-              <a href="{% url 'profile_edit' %}"><button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
-                style="z-index: 1;">
-                Edit profile
+              <a href="{% url 'profile_edit' %}" style="z-index: 1 !important;"><button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
+                style="width: 150px; z-index: 1">
+                Edit Profile
               </button></a>
             </div>
             <div class="ms-3" {% if request.user.get_user %} style="margin-top: 100px;" {% else %} style="margin-top: 130px;" {% endif %} >
